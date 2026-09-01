@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using connectasys_api.Core.Application.DTOs;
 using connectasys_api.Core.Application.Interfaces.Repositories;
+using connectasys_api.Core.Application.Interfaces.Services;
 using connectasys_api.Core.Domain.Entities;
 
 namespace connectasys_api.Core.Application.Commands.Usuarios.CreateUsuario
@@ -8,8 +9,13 @@ namespace connectasys_api.Core.Application.Commands.Usuarios.CreateUsuario
     public class CreateUsuarioHandler : IRequestHandler<CreateUsuarioCommand, UsuarioDto>
     {
         private readonly IUsuarioRepository _repository;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public CreateUsuarioHandler(IUsuarioRepository repository) => _repository = repository;
+        public CreateUsuarioHandler(IUsuarioRepository repository, IPasswordHasher passwordHasher)
+        {
+            _repository = repository;
+            _passwordHasher = passwordHasher;
+        }
 
         public async Task<UsuarioDto> Handle(CreateUsuarioCommand request, CancellationToken cancellationToken)
         {
@@ -20,6 +26,7 @@ namespace connectasys_api.Core.Application.Commands.Usuarios.CreateUsuario
                 Email = request.Email,
                 Role = request.Role,
                 Telefone = request.Telefone,
+                SenhaHash = _passwordHasher.Hash(request.Senha),
                 DataCriacaoUtc = DateTime.UtcNow
             };
 

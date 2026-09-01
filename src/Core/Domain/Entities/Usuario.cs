@@ -12,5 +12,6 @@ namespace connectasys_api.Core.Domain.Entities
         public string Role { get; set; } = string.Empty;
         public DateTime DataCriacaoUtc { get; set; } = DateTime.UtcNow;
         public string Telefone { get; set; } = string.Empty;
+        public string SenhaHash { get; set; } = string.Empty;
     }
 }

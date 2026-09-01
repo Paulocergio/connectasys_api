@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using connectasys_api.Infrastructure.Persistence.Context;
 using connectasys_api.Infrastructure.Persistence.Repositories;
 using connectasys_api.Core.Application.Interfaces.Repositories;
+using connectasys_api.Core.Application.Interfaces.Services;
+using connectasys_api.Infrastructure.Security;
 using connectasys_api.Core.Application.Commands.Clientes.CreateCliente;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateClienteCommand).Assembly));
 

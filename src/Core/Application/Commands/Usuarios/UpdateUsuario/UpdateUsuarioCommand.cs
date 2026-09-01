@@ -9,5 +9,6 @@ namespace connectasys_api.Core.Application.Commands.Usuarios.UpdateUsuario
         public string Email { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
         public string Telefone { get; set; } = string.Empty;
+        public string? Senha { get; set; }
     }
 }
