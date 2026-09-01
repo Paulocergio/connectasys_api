@@ -1,0 +1,6 @@
+@connectasys_api.API_HostAddress = http://localhost:5283
+
+GET {{connectasys_api.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
