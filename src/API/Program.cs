@@ -14,6 +14,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IVeiculoRepository, VeiculoRepository>();
+builder.Services.AddScoped<IContaPagarRepository, ContaPagarRepository>();
+builder.Services.AddScoped<IContaReceberRepository, ContaReceberRepository>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateClienteCommand).Assembly));

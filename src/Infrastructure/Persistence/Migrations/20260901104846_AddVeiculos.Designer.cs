@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using connectasys_api.Infrastructure.Persistence.Context;
@@ -11,9 +12,11 @@ using connectasys_api.Infrastructure.Persistence.Context;
 namespace connectasys_api.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260901104846_AddVeiculos")]
+    partial class AddVeiculos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,90 +59,6 @@ namespace connectasys_api.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("clientes", (string)null);
-                });
-
-            modelBuilder.Entity("connectasys_api.Core.Domain.Entities.ContaPagar", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DataCadastro")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("data_cadastro");
-
-                    b.Property<DateTime?>("DataPagamento")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("data_pagamento");
-
-                    b.Property<DateTime>("DataVencimento")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("data_vencimento");
-
-                    b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("descricao");
-
-                    b.Property<string>("Fornecedor")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)")
-                        .HasColumnName("fornecedor");
-
-                    b.Property<decimal>("Valor")
-                        .HasColumnType("numeric(12,2)")
-                        .HasColumnName("valor");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("contas_pagar", (string)null);
-                });
-
-            modelBuilder.Entity("connectasys_api.Core.Domain.Entities.ContaReceber", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ClienteId")
-                        .HasColumnType("integer")
-                        .HasColumnName("cliente_id");
-
-                    b.Property<DateTime>("DataCadastro")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("data_cadastro");
-
-                    b.Property<DateTime?>("DataRecebimento")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("data_recebimento");
-
-                    b.Property<DateTime>("DataVencimento")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("data_vencimento");
-
-                    b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("descricao");
-
-                    b.Property<decimal>("Valor")
-                        .HasColumnType("numeric(12,2)")
-                        .HasColumnName("valor");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClienteId");
-
-                    b.ToTable("contas_receber", (string)null);
                 });
 
             modelBuilder.Entity("connectasys_api.Core.Domain.Entities.Usuario", b =>
@@ -238,15 +157,6 @@ namespace connectasys_api.Infrastructure.Persistence.Migrations
                     b.HasIndex("ClienteId");
 
                     b.ToTable("veiculos", (string)null);
-                });
-
-            modelBuilder.Entity("connectasys_api.Core.Domain.Entities.ContaReceber", b =>
-                {
-                    b.HasOne("connectasys_api.Core.Domain.Entities.Cliente", null)
-                        .WithMany()
-                        .HasForeignKey("ClienteId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("connectasys_api.Core.Domain.Entities.Veiculo", b =>
