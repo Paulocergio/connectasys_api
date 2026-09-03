@@ -52,9 +52,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseHsts();
+}
 
-// HTTPS redirect desativado por enquanto, para facilitar testes locais via HTTP no Swagger
-// app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
