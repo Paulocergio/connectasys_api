@@ -41,7 +41,10 @@ ConnectaSys é um SaaS de gestão para oficinas mecânicas. O núcleo do domíni
 
 Estas ausências são decisões conscientes da fase atual do projeto, não esquecimento:
 
-- ❌ Sem autenticação/autorização (JWT ainda não implementado)
+- ⚠️ JWT existe só pra emissão de token no login (`POST /api/Auth/login`) — nenhum
+  controller tem `[Authorize]` ainda, então todo endpoint continua acessível sem
+  token. Proteger os endpoints é uma feature própria (spec/design/tasks dedicados),
+  não algo a fazer de passagem em outra feature.
 - ❌ Sem hash de senha (senha é gravada em texto puro por enquanto)
 - ❌ Sem validação de entrada (FluentValidation ainda não adicionado)
 - ❌ Sem testes automatizados
@@ -57,6 +60,11 @@ Só são criadas as pastas realmente usadas no momento. Pastas do "esqueleto" or
 
 - `UseHttpsRedirection()` está desativado em `Program.cs` para simplificar testes via HTTP no Swagger em desenvolvimento local.
 - Connection string fica em `appsettings.json`; segredos locais (senha real, `appsettings.Development.json`) ficam fora do Git via `.gitignore`.
+- **CORS** liberado em `Program.cs` (política `DevCors`) pra qualquer origem em
+  `localhost`/`127.0.0.1`, sem `AllowCredentials` — permite o `connectasys-hub`
+  (Vite, porta variável) chamar a API do navegador em desenvolvimento. Deve ser
+  revisto pra uma lista de origens explícita antes de qualquer deploy fora do
+  ambiente local.
 
 ## 9. Como as specs devem ser escritas
 

@@ -30,3 +30,27 @@
   - [x] Remover → `204`; remover id inexistente → `404`
 
 **Status: concluído.** Testado ponta a ponta via API real (cliente de teste criado e removido após os testes).
+
+## Correção pós-conclusão (2026-09-03)
+
+Ao integrar o hub (`connectasys-hub`, feature `contas-a-receber`), o
+`POST`/`PUT` retornavam `500` (`DbUpdateException` /
+`Npgsql.../ArgumentException: Cannot write DateTime with Kind=Unspecified
+to PostgreSQL type 'timestamp with time zone'`) ao enviar
+`dataVencimento`/`dataRecebimento` no formato `yyyy-mm-dd` (o que
+`<input type="date">` produz — `Kind=Unspecified` na desserialização).
+`ContasPagar` não tinha esse problema porque `CreateContaPagarHandler`/
+`UpdateContaPagarHandler` já chamavam `DateTime.SpecifyKind(...,
+DateTimeKind.Utc)`; os handlers de `ContasReceber` não chamavam. Os
+testes originais desta feature (`curl`) aparentemente usaram datas já em
+UTC (com `Z`), por isso o teste "criar conta com `ClienteId` válido →
+`201`" acima passou sem pegar o bug.
+
+- [x] `CreateContaReceberHandler`: `DataVencimento` agora passa por
+      `DateTime.SpecifyKind(..., DateTimeKind.Utc)`
+- [x] `UpdateContaReceberHandler`: `DataVencimento` e `DataRecebimento`
+      idem
+- [x] Reconfirmado via `curl`: criar com `dataVencimento` `yyyy-mm-dd` →
+      `201`; atualizar com `dataRecebimento` `yyyy-mm-dd` → `204`,
+      `Status` = "Paga"; `ClienteId` inexistente no update → `400`;
+      registro de teste removido após a verificação

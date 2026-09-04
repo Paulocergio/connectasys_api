@@ -1,10 +1,11 @@
 ﻿using MediatR;
+using connectasys_api.Core.Application.Common;
 using connectasys_api.Core.Application.Interfaces.Repositories;
 using connectasys_api.Core.Application.Interfaces.Services;
 
 namespace connectasys_api.Core.Application.Commands.Usuarios.UpdateUsuario
 {
-    public class UpdateUsuarioHandler : IRequestHandler<UpdateUsuarioCommand, bool>
+    public class UpdateUsuarioHandler : IRequestHandler<UpdateUsuarioCommand, ResultadoAtualizacaoUsuario>
     {
         private readonly IUsuarioRepository _repository;
         private readonly IPasswordHasher _passwordHasher;
@@ -15,10 +16,15 @@ namespace connectasys_api.Core.Application.Commands.Usuarios.UpdateUsuario
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<bool> Handle(UpdateUsuarioCommand request, CancellationToken cancellationToken)
+        public async Task<ResultadoAtualizacaoUsuario> Handle(UpdateUsuarioCommand request, CancellationToken cancellationToken)
         {
             var usuario = await _repository.GetByIdAsync(request.Id);
-            if (usuario is null) return false;
+            if (usuario is null) return ResultadoAtualizacaoUsuario.NaoEncontrado;
+
+            var existente = await _repository.GetByEmailAsync(request.Email);
+            if (existente is not null && existente.Id != request.Id) return ResultadoAtualizacaoUsuario.EmailEmUso;
+
+            if (!Roles.EhValida(request.Role)) return ResultadoAtualizacaoUsuario.RoleInvalida;
 
             usuario.Nome = request.Nome;
             usuario.Email = request.Email;
@@ -31,7 +37,7 @@ namespace connectasys_api.Core.Application.Commands.Usuarios.UpdateUsuario
             }
 
             await _repository.UpdateAsync(usuario);
-            return true;
+            return ResultadoAtualizacaoUsuario.Sucesso;
         }
     }
 }

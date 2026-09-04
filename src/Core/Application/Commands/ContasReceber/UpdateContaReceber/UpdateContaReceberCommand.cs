@@ -6,7 +6,8 @@ namespace connectasys_api.Core.Application.Commands.ContasReceber.UpdateContaRec
     {
         Success,
         ContaNotFound,
-        ClienteInvalido
+        ClienteInvalido,
+        FormaPagamentoInvalida
     }
 
     public class UpdateContaReceberCommand : IRequest<UpdateContaReceberResult>
@@ -17,5 +18,6 @@ namespace connectasys_api.Core.Application.Commands.ContasReceber.UpdateContaRec
         public decimal Valor { get; set; }
         public DateTime DataVencimento { get; set; }
         public DateTime? DataRecebimento { get; set; }
+        public string? FormaPagamento { get; set; }
     }
 }

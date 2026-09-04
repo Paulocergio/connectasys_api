@@ -102,6 +102,9 @@ O Controller não acessa o banco diretamente — ele envia um Command (escrita) 
 
 **Campos:** `nome`, `email`, `role`, `telefone`, `dataCriacaoUtc`
 
+**E-mail único:** criar ou atualizar um usuário com um e-mail já usado por
+outro retorna `409 Conflict`.
+
 ## 🗺️ Roadmap
 
 - [ ] 🔐 Autenticação e autorização (JWT)

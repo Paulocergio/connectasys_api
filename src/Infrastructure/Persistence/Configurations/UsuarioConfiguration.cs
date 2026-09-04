@@ -22,6 +22,8 @@ namespace connectasys_api.Infrastructure.Persistence.Configurations
             builder.Property(u => u.SenhaHash).HasColumnName("senha_hash").HasMaxLength(60);
             builder.Property(u => u.DataCriacaoUtc).HasColumnName("data_criacao_utc");
 
+            builder.HasIndex(u => u.Email).IsUnique();
+
         }
     }
 }

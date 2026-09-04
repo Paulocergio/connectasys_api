@@ -17,6 +17,7 @@ namespace connectasys_api.Infrastructure.Persistence.Configurations
             builder.Property(c => c.Valor).HasColumnName("valor").HasColumnType("numeric(12,2)");
             builder.Property(c => c.DataVencimento).HasColumnName("data_vencimento");
             builder.Property(c => c.DataPagamento).HasColumnName("data_pagamento");
+            builder.Property(c => c.FormaPagamento).HasColumnName("forma_pagamento").HasMaxLength(20);
             builder.Property(c => c.DataCadastro).HasColumnName("data_cadastro");
         }
     }

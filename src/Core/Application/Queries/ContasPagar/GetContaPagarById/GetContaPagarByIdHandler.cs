@@ -24,6 +24,7 @@ namespace connectasys_api.Core.Application.Queries.ContasPagar.GetContaPagarById
                 Valor = conta.Valor,
                 DataVencimento = conta.DataVencimento,
                 DataPagamento = conta.DataPagamento,
+                FormaPagamento = conta.FormaPagamento,
                 Status = StatusConta.Calcular(conta.DataPagamento, conta.DataVencimento),
                 DataCadastro = conta.DataCadastro
             };

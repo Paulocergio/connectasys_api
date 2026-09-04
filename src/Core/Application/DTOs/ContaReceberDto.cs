@@ -8,6 +8,7 @@ namespace connectasys_api.Core.Application.DTOs
         public decimal Valor { get; set; }
         public DateTime DataVencimento { get; set; }
         public DateTime? DataRecebimento { get; set; }
+        public string? FormaPagamento { get; set; }
         public string Status { get; set; } = string.Empty;
         public DateTime DataCadastro { get; set; }
     }

@@ -41,3 +41,50 @@
   - [x] Listar e buscar por id → nenhuma resposta contém senha/hash
 
 **Status: concluído.** Login/autenticação (JWT) fica fora desta etapa — spec futura separada, ver `spec.md`.
+
+## E-mail único (nova etapa)
+
+- [x] Remover as linhas duplicadas de teste (`carlos.santos@empresa.com`)
+      do banco local via `DELETE /api/Usuarios/{id}`. Nota: as 10 linhas
+      eram indistinguíveis (mesmo nome/e-mail/telefone, lixo de clique
+      repetido em teste manual) — as 10 foram removidas em vez de manter
+      uma, já que nenhuma carregava dado diferente das outras. Restou só
+      o usuário real (`juniorcergio@gmail.com`).
+- [x] Adicionar `builder.HasIndex(u => u.Email).IsUnique();` em
+      `UsuarioConfiguration.cs`.
+- [x] Gerar migration `AddUniqueIndexUsuarioEmail` e aplicar localmente
+      (`dotnet ef database update`) — `CREATE UNIQUE INDEX "IX_usuarios_email"
+      ON usuarios (email);` confirmado no log da aplicação.
+- [x] Mudar `CreateUsuarioCommand` de `IRequest<UsuarioDto>` para
+      `IRequest<UsuarioDto?>`; `CreateUsuarioHandler` verifica
+      `GetByEmailAsync` antes de criar e retorna `null` se já existir.
+- [x] Atualizar `UsuariosController.Create` pra responder `409 Conflict`
+      quando o Handler retornar `null`.
+- [x] Criar enum `ResultadoAtualizacaoUsuario` (`Sucesso`, `NaoEncontrado`,
+      `EmailEmUso`); `UpdateUsuarioCommand` passa a usá-lo como retorno em
+      vez de `bool`.
+- [x] Atualizar `UpdateUsuarioHandler`: além do `GetByIdAsync` já existente,
+      verificar se o novo e-mail já pertence a outro usuário
+      (`GetByEmailAsync` + comparar `Id`) e retornar `EmailEmUso` nesse
+      caso.
+- [x] Atualizar `UsuariosController.Update` pra mapear o enum em
+      `204`/`404`/`409`.
+- [x] `dotnet build` sem erros (0 avisos, 0 erros).
+- [x] Testar manualmente (HTTP direto):
+  - [x] Criar usuário com e-mail já existente
+        (`juniorcergio@gmail.com`) → `409` com
+        `{"message":"Já existe um usuário cadastrado com este e-mail."}`,
+        nenhuma linha nova no banco.
+  - [x] Atualizar usuário B para o e-mail do usuário A → `409`, nada
+        alterado.
+  - [x] Atualizar usuário mantendo o próprio e-mail → `204`, funciona
+        normalmente.
+  - [ ] Tentar inserir duplicata direto no banco (fora da API) — **não
+        testado**: sem cliente `psql` disponível no ambiente local usado
+        pra essa correção. O `CREATE UNIQUE INDEX` executado com sucesso
+        na migration já é a garantia de que o Postgres rejeita duplicata
+        em qualquer camada; só a confirmação manual via SQL direto ficou
+        pendente.
+
+**Status: concluído** (exceto o teste manual de bypass direto no banco,
+marcado acima como não executado por falta de ferramenta no ambiente).

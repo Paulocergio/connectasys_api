@@ -1,5 +1,63 @@
 # Design — Usuários
 
+## E-mail único — decisão técnica (nova etapa)
+
+**Problema encontrado:** nem o `CreateUsuarioHandler` nem o `UpdateUsuarioHandler`
+verificavam se o e-mail já existia — a única checagem de e-mail no sistema era
+`GetByEmailAsync` no login, que usa `FirstOrDefaultAsync` e silenciosamente
+ignora duplicatas (pega sempre a primeira linha que bater). Isso permitia
+criar N usuários com o mesmo e-mail, deixando o login ambíguo sobre qual
+deles é retornado. Confirmado com dado real no banco local (10 linhas
+`carlos.santos@empresa.com` distintas).
+
+**Onde a validação acontece:** nos próprios Handlers (`CreateUsuarioHandler`,
+`UpdateUsuarioHandler`), reaproveitando `IUsuarioRepository.GetByEmailAsync`
+que já existe — sem repositório novo, sem FluentValidation (fora de escopo
+da constitution, seção 6). Mesmo padrão arquitetural já usado no projeto:
+Handler orquestra, Repository só busca/persiste.
+
+**Como o resultado chega no Controller:** seguindo o mesmo padrão já usado em
+`LoginHandler` (retorno nulo = falha, tratado no Controller), sem introduzir
+exceptions customizadas nem middleware de erro:
+
+- `CreateUsuarioCommand` passa de `IRequest<UsuarioDto>` para
+  `IRequest<UsuarioDto?>`. Handler retorna `null` quando o e-mail já existe;
+  Controller responde `409 Conflict` quando o retorno é `null` (em vez de
+  `201 Created`).
+- `UpdateUsuarioCommand` não pode mais usar só `bool` (dois estados) — agora
+  há três: sucesso, não encontrado, e-mail em uso. Novo enum
+  `ResultadoAtualizacaoUsuario` (`Sucesso`, `NaoEncontrado`, `EmailEmUso`) em
+  `Core/Application/Commands/Usuarios/UpdateUsuario/`. Controller faz um
+  `switch` pra `204`/`404`/`409`.
+
+**Corpo do erro 409**, mesmo formato que `AuthController` já usa pra 401:
+`{ "message": "Já existe um usuário cadastrado com este e-mail." }` — o
+`apiFetch` do hub já sabe ler `data.message` (`src/lib/api.ts`), então o
+frontend não precisa de nenhuma mudança pra exibir isso (ver
+`connectasys-hub/specs/usuarios-api/design.md`, RF-05 já cobria esse
+cenário).
+
+**Comparação:** exata (`==`), sensível a maiúsculas/minúsculas — mesma
+semântica já usada em `GetByEmailAsync` pro login. Ver spec.md, seção "Fora
+de escopo", pra normalização de e-mail.
+
+**Defesa em profundidade — índice único no banco:** a checagem no Handler
+sozinha não é segura contra duas requisições concorrentes com o mesmo
+e-mail (race condition clássica de check-then-insert). Por isso
+`UsuarioConfiguration` ganha `builder.HasIndex(u => u.Email).IsUnique();` —
+o Handler dá a mensagem de erro legível no caso comum; o índice único é a
+garantia real de que o banco nunca aceita a duplicata, mesmo na corrida.
+
+**Dado de teste existente:** o banco local tem 10 linhas duplicadas de
+`carlos.santos@empresa.com` (lixo de teste manual de clique repetido, sem
+relação com o e-mail do usuário real `juniorcergio@gmail.com` que também
+está na tabela). A migration do índice único **falha** se aplicada com
+duplicata existente — antes de gerar/aplicar a migration, as 9 linhas mais
+recentes de cada grupo duplicado são removidas via `DELETE
+/api/Usuarios/{id}`, mantendo a primeira (mesmo raciocínio já usado antes
+pra dado de teste local — constitution, seção 6: sem dado de produção nesta
+fase).
+
 ## Hash de senha — decisão técnica
 
 **Onde o hash acontece:** num serviço dedicado `IPasswordHasher` (Core) / `PasswordHasher` (Infrastructure), injetado nos Handlers de `CreateUsuario` e `UpdateUsuario` — não direto no Handler com chamada estática ao BCrypt, e não numa camada de "serviço de domínio" separada.

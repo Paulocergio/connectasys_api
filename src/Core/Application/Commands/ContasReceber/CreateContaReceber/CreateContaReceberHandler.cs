@@ -27,7 +27,7 @@ namespace connectasys_api.Core.Application.Commands.ContasReceber.CreateContaRec
                 ClienteId = request.ClienteId,
                 Descricao = request.Descricao,
                 Valor = request.Valor,
-                DataVencimento = request.DataVencimento,
+                DataVencimento = DateTime.SpecifyKind(request.DataVencimento, DateTimeKind.Utc),
                 DataCadastro = DateTime.UtcNow
             };
 
@@ -41,6 +41,7 @@ namespace connectasys_api.Core.Application.Commands.ContasReceber.CreateContaRec
                 Valor = contaReceber.Valor,
                 DataVencimento = contaReceber.DataVencimento,
                 DataRecebimento = contaReceber.DataRecebimento,
+                FormaPagamento = contaReceber.FormaPagamento,
                 Status = StatusConta.Calcular(contaReceber.DataRecebimento, contaReceber.DataVencimento),
                 DataCadastro = contaReceber.DataCadastro
             };

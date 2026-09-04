@@ -2,7 +2,7 @@
 
 namespace connectasys_api.Core.Application.Commands.Usuarios.UpdateUsuario
 {
-    public class UpdateUsuarioCommand : IRequest<bool>
+    public class UpdateUsuarioCommand : IRequest<ResultadoAtualizacaoUsuario>
     {
         public Guid Id { get; set; }
         public string Nome { get; set; } = string.Empty;

@@ -2,7 +2,14 @@ using MediatR;
 
 namespace connectasys_api.Core.Application.Commands.ContasPagar.UpdateContaPagar
 {
-    public class UpdateContaPagarCommand : IRequest<bool>
+    public enum UpdateContaPagarResult
+    {
+        Success,
+        ContaNotFound,
+        FormaPagamentoInvalida
+    }
+
+    public class UpdateContaPagarCommand : IRequest<UpdateContaPagarResult>
     {
         public int Id { get; set; }
         public string Descricao { get; set; } = string.Empty;
@@ -10,5 +17,6 @@ namespace connectasys_api.Core.Application.Commands.ContasPagar.UpdateContaPagar
         public decimal Valor { get; set; }
         public DateTime DataVencimento { get; set; }
         public DateTime? DataPagamento { get; set; }
+        public string? FormaPagamento { get; set; }
     }
 }

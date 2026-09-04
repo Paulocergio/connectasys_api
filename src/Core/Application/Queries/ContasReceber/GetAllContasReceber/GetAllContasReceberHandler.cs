@@ -23,6 +23,7 @@ namespace connectasys_api.Core.Application.Queries.ContasReceber.GetAllContasRec
                 Valor = c.Valor,
                 DataVencimento = c.DataVencimento,
                 DataRecebimento = c.DataRecebimento,
+                FormaPagamento = c.FormaPagamento,
                 Status = StatusConta.Calcular(c.DataRecebimento, c.DataVencimento),
                 DataCadastro = c.DataCadastro
             }).ToList();

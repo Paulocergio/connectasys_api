@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using connectasys_api.Infrastructure.Persistence.Context;
@@ -11,9 +12,11 @@ using connectasys_api.Infrastructure.Persistence.Context;
 namespace connectasys_api.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260903201328_AddUniqueIndexUsuarioEmail")]
+    partial class AddUniqueIndexUsuarioEmail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,11 +88,6 @@ namespace connectasys_api.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("descricao");
 
-                    b.Property<string>("FormaPagamento")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("forma_pagamento");
-
                     b.Property<string>("Fornecedor")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -135,11 +133,6 @@ namespace connectasys_api.Infrastructure.Persistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
                         .HasColumnName("descricao");
-
-                    b.Property<string>("FormaPagamento")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("forma_pagamento");
 
                     b.Property<decimal>("Valor")
                         .HasColumnType("numeric(12,2)")

@@ -25,6 +25,13 @@ Gerenciar a equipe interna da oficina (mecânicos, atendentes, administradores) 
 
 ## Critérios de aceite
 
+- **O e-mail é único entre os usuários.** Criar um usuário com um e-mail já
+  cadastrado (comparação exata, sensível a maiúsculas/minúsculas — mesma
+  regra já usada na busca de login) não cria um segundo registro: retorna
+  `409 Conflict` com uma mensagem clara. Atualizar um usuário para um
+  e-mail que já pertence a **outro** usuário tem o mesmo comportamento;
+  atualizar um usuário mantendo o próprio e-mail continua funcionando
+  normalmente.
 - Criar usuário retorna `201 Created` com o usuário criado (incluindo o `Id` gerado como `Guid`).
 - Criar usuário exige uma senha em texto puro no corpo da requisição; a senha nunca é gravada em texto puro no banco — apenas o hash é persistido (coluna `senha_hash`).
 - Atualizar usuário aceita opcionalmente uma nova senha; se enviada, o hash é recalculado e substitui o hash anterior; se omitida, a senha atual não é alterada.
@@ -42,3 +49,6 @@ Gerenciar a equipe interna da oficina (mecânicos, atendentes, administradores) 
 - Validação de formato de email/telefone ou de força/complexidade da senha (ex: tamanho mínimo, caracteres especiais).
 - Restrição de valores possíveis para `Role` (enum/lista fixa).
 - Multi-tenant (`empresa_id`).
+- Normalização de e-mail (ex.: tratar `Joao@x.com` e `joao@x.com` como o
+  mesmo e-mail) — a checagem de duplicidade usa comparação exata, igual à
+  já existente na busca de login.

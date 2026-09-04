@@ -24,6 +24,7 @@ namespace connectasys_api.Core.Application.Queries.ContasReceber.GetContaReceber
                 Valor = conta.Valor,
                 DataVencimento = conta.DataVencimento,
                 DataRecebimento = conta.DataRecebimento,
+                FormaPagamento = conta.FormaPagamento,
                 Status = StatusConta.Calcular(conta.DataRecebimento, conta.DataVencimento),
                 DataCadastro = conta.DataCadastro
             };

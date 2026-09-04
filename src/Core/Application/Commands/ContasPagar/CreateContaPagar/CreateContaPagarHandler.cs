@@ -19,7 +19,7 @@ namespace connectasys_api.Core.Application.Commands.ContasPagar.CreateContaPagar
                 Descricao = request.Descricao,
                 Fornecedor = request.Fornecedor,
                 Valor = request.Valor,
-                DataVencimento = request.DataVencimento,
+                DataVencimento = DateTime.SpecifyKind(request.DataVencimento, DateTimeKind.Utc),
                 DataCadastro = DateTime.UtcNow
             };
 
@@ -33,6 +33,7 @@ namespace connectasys_api.Core.Application.Commands.ContasPagar.CreateContaPagar
                 Valor = contaPagar.Valor,
                 DataVencimento = contaPagar.DataVencimento,
                 DataPagamento = contaPagar.DataPagamento,
+                FormaPagamento = contaPagar.FormaPagamento,
                 Status = StatusConta.Calcular(contaPagar.DataPagamento, contaPagar.DataVencimento),
                 DataCadastro = contaPagar.DataCadastro
             };

@@ -37,8 +37,16 @@ namespace connectasys_api.API.Controllers
         public async Task<IActionResult> Update(int id, UpdateContaPagarCommand command)
         {
             if (id != command.Id) return BadRequest();
-            var success = await _mediator.Send(command);
-            return success ? NoContent() : NotFound();
+
+            var result = await _mediator.Send(command);
+            return result switch
+            {
+                UpdateContaPagarResult.Success => NoContent(),
+                UpdateContaPagarResult.ContaNotFound => NotFound(),
+                UpdateContaPagarResult.FormaPagamentoInvalida =>
+                    BadRequest("FormaPagamento é obrigatória e deve ser Cartão, Pix, Boleto ou Dinheiro ao informar DataPagamento."),
+                _ => StatusCode(500)
+            };
         }
 
         [HttpDelete("{id}")]

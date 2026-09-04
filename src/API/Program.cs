@@ -45,6 +45,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+const string DevCorsPolicy = "DevCors";
+builder.Services.AddCors(options =>
+{
+    // Dev-only: libera qualquer origem em localhost/127.0.0.1 (a porta do Vite/hub pode variar).
+    // Sem AllowCredentials porque a autenticação usa Bearer token, não cookie.
+    options.AddPolicy(DevCorsPolicy, policy =>
+        policy.SetIsOriginAllowed(origin => new Uri(origin).IsLoopback)
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -58,6 +69,8 @@ else
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(DevCorsPolicy);
 
 app.UseAuthentication();
 app.UseAuthorization();

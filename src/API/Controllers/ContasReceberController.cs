@@ -50,6 +50,8 @@ namespace connectasys_api.API.Controllers
                 UpdateContaReceberResult.Success => NoContent(),
                 UpdateContaReceberResult.ContaNotFound => NotFound(),
                 UpdateContaReceberResult.ClienteInvalido => BadRequest("ClienteId inválido."),
+                UpdateContaReceberResult.FormaPagamentoInvalida =>
+                    BadRequest("FormaPagamento é obrigatória e deve ser Cartão, Pix, Boleto ou Dinheiro ao informar DataRecebimento."),
                 _ => StatusCode(500)
             };
         }

@@ -29,16 +29,33 @@ namespace connectasys_api.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateUsuarioCommand command)
         {
-            var result = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            var resultado = await _mediator.Send(command);
+            return resultado.Resultado switch
+            {
+                ResultadoCriacaoUsuario.Sucesso =>
+                    CreatedAtAction(nameof(GetById), new { id = resultado.Usuario!.Id }, resultado.Usuario),
+                ResultadoCriacaoUsuario.EmailEmUso =>
+                    Conflict(new { message = "Já existe um usuário cadastrado com este e-mail." }),
+                ResultadoCriacaoUsuario.RoleInvalida =>
+                    BadRequest(new { message = "Role inválida. Use Admin, Mecânico, Recepcionista ou Financeiro." }),
+                _ => throw new InvalidOperationException($"Resultado inesperado: {resultado.Resultado}")
+            };
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, UpdateUsuarioCommand command)
         {
             if (id != command.Id) return BadRequest();
-            var success = await _mediator.Send(command);
-            return success ? NoContent() : NotFound();
+            var resultado = await _mediator.Send(command);
+            return resultado switch
+            {
+                ResultadoAtualizacaoUsuario.Sucesso => NoContent(),
+                ResultadoAtualizacaoUsuario.NaoEncontrado => NotFound(),
+                ResultadoAtualizacaoUsuario.EmailEmUso => Conflict(new { message = "Já existe um usuário cadastrado com este e-mail." }),
+                ResultadoAtualizacaoUsuario.RoleInvalida =>
+                    BadRequest(new { message = "Role inválida. Use Admin, Mecânico, Recepcionista ou Financeiro." }),
+                _ => throw new InvalidOperationException($"Resultado inesperado: {resultado}")
+            };
         }
 
         [HttpDelete("{id}")]
