@@ -20,6 +20,14 @@ namespace connectasys_api.Core.Application.Queries.Clientes.GetAllClientes
                 Nome = c.Nome,
                 Email = c.Email,
                 Telefone = c.Telefone,
+                Cpf = c.Cpf,
+                Cnpj = c.Cnpj,
+                RazaoSocial = c.RazaoSocial,
+                Cep = c.Cep,
+                Logradouro = c.Logradouro,
+                Bairro = c.Bairro,
+                Municipio = c.Municipio,
+                Uf = c.Uf,
                 DataCadastro = c.DataCadastro
             }).ToList();
         }

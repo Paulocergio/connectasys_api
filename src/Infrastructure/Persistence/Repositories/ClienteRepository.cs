@@ -15,6 +15,12 @@ namespace connectasys_api.Infrastructure.Persistence.Repositories
 
         public async Task<Cliente?> GetByIdAsync(int id) => await _context.Clientes.FindAsync(id);
 
+        public async Task<Cliente?> GetByCpfAsync(string cpf) =>
+            await _context.Clientes.FirstOrDefaultAsync(c => c.Cpf == cpf);
+
+        public async Task<Cliente?> GetByCnpjAsync(string cnpj) =>
+            await _context.Clientes.FirstOrDefaultAsync(c => c.Cnpj == cnpj);
+
         public async Task AddAsync(Cliente cliente)
         {
             _context.Clientes.Add(cliente);

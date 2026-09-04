@@ -21,6 +21,14 @@ namespace connectasys_api.Core.Application.Queries.Clientes.GetClienteById
                 Nome = cliente.Nome,
                 Email = cliente.Email,
                 Telefone = cliente.Telefone,
+                Cpf = cliente.Cpf,
+                Cnpj = cliente.Cnpj,
+                RazaoSocial = cliente.RazaoSocial,
+                Cep = cliente.Cep,
+                Logradouro = cliente.Logradouro,
+                Bairro = cliente.Bairro,
+                Municipio = cliente.Municipio,
+                Uf = cliente.Uf,
                 DataCadastro = cliente.DataCadastro
             };
         }

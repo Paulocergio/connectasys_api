@@ -30,6 +30,8 @@ namespace connectasys_api.API.Controllers
         public async Task<IActionResult> Create(CreateClienteCommand command)
         {
             var result = await _mediator.Send(command);
+            if (result is null)
+                return Conflict(new { message = "Já existe um cliente cadastrado com este CPF ou CNPJ." });
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
@@ -37,8 +39,15 @@ namespace connectasys_api.API.Controllers
         public async Task<IActionResult> Update(int id, UpdateClienteCommand command)
         {
             if (id != command.Id) return BadRequest();
-            var success = await _mediator.Send(command);
-            return success ? NoContent() : NotFound();
+            var result = await _mediator.Send(command);
+            return result switch
+            {
+                UpdateClienteResult.Success => NoContent(),
+                UpdateClienteResult.ClienteNotFound => NotFound(),
+                UpdateClienteResult.DocumentoEmUso =>
+                    Conflict(new { message = "Já existe um cliente cadastrado com este CPF ou CNPJ." }),
+                _ => StatusCode(500)
+            };
         }
 
         [HttpDelete("{id}")]

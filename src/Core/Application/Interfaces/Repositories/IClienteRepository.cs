@@ -6,6 +6,8 @@ namespace connectasys_api.Core.Application.Interfaces.Repositories
     {
         Task<List<Cliente>> GetAllAsync();
         Task<Cliente?> GetByIdAsync(int id);
+        Task<Cliente?> GetByCpfAsync(string cpf);
+        Task<Cliente?> GetByCnpjAsync(string cnpj);
         Task AddAsync(Cliente cliente);
         Task UpdateAsync(Cliente cliente);
         Task DeleteAsync(Cliente cliente);

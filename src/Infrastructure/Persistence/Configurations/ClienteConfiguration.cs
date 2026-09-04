@@ -15,6 +15,14 @@ namespace connectasys_api.Infrastructure.Persistence.Configurations
             builder.Property(c => c.Nome).HasColumnName("nome").HasMaxLength(150);
             builder.Property(c => c.Email).HasColumnName("email").HasMaxLength(256);
             builder.Property(c => c.Telefone).HasColumnName("telefone").HasMaxLength(20);
+            builder.Property(c => c.Cpf).HasColumnName("cpf").HasMaxLength(11);
+            builder.Property(c => c.Cnpj).HasColumnName("cnpj").HasMaxLength(14);
+            builder.Property(c => c.RazaoSocial).HasColumnName("razao_social").HasMaxLength(200);
+            builder.Property(c => c.Cep).HasColumnName("cep").HasMaxLength(8);
+            builder.Property(c => c.Logradouro).HasColumnName("logradouro").HasMaxLength(200);
+            builder.Property(c => c.Bairro).HasColumnName("bairro").HasMaxLength(100);
+            builder.Property(c => c.Municipio).HasColumnName("municipio").HasMaxLength(100);
+            builder.Property(c => c.Uf).HasColumnName("uf").HasMaxLength(2);
             builder.Property(c => c.DataCadastro).HasColumnName("data_cadastro");
         }
     }
