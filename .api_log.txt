@@ -1,0 +1,62 @@
+Usando as configurações de inicialização de src\API\Properties\launchSettings.json...
+Compilando...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5283
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: D:\connectasys_api\src\API
+warn: LuckyPennySoftware.MediatR.License[0]
+      You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (40ms) [Parameters=[@email='?'], CommandType='Text', CommandTimeout='30']
+      SELECT u.id, u.data_criacao_utc, u.email, u.nome, u.role, u.senha_hash, u.telefone
+      FROM usuarios AS u
+      WHERE u.email = @email
+      LIMIT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[@email='?'], CommandType='Text', CommandTimeout='30']
+      SELECT u.id, u.data_criacao_utc, u.email, u.nome, u.role, u.senha_hash, u.telefone
+      FROM usuarios AS u
+      WHERE u.email = @email
+      LIMIT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT c.id, c.data_cadastro, c.email, c.nome, c.telefone
+      FROM clientes AS c
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT u.id, u.data_criacao_utc, u.email, u.nome, u.role, u.senha_hash, u.telefone
+      FROM usuarios AS u
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?', @p3='?', @p4='?', @p5='?', @p6='?'], CommandType='Text', CommandTimeout='30']
+      INSERT INTO usuarios (id, data_criacao_utc, email, nome, role, senha_hash, telefone)
+      VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@email='?'], CommandType='Text', CommandTimeout='30']
+      SELECT u.id, u.data_criacao_utc, u.email, u.nome, u.role, u.senha_hash, u.telefone
+      FROM usuarios AS u
+      WHERE u.email = @email
+      LIMIT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?', @p3='?', @p4='?', @p5='?', @p6='?'], CommandType='Text', CommandTimeout='30']
+      INSERT INTO usuarios (id, data_criacao_utc, email, nome, role, senha_hash, telefone)
+      VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@email='?'], CommandType='Text', CommandTimeout='30']
+      SELECT u.id, u.data_criacao_utc, u.email, u.nome, u.role, u.senha_hash, u.telefone
+      FROM usuarios AS u
+      WHERE u.email = @email
+      LIMIT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@p='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT u.id, u.data_criacao_utc, u.email, u.nome, u.role, u.senha_hash, u.telefone
+      FROM usuarios AS u
+      WHERE u.id = @p
+      LIMIT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      DELETE FROM usuarios
+      WHERE id = @p0;

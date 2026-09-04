@@ -9,6 +9,7 @@ namespace connectasys_api.Core.Application.Interfaces.Repositories
     {
         Task<List<Usuario>> GetAllAsync();
         Task<Usuario?> GetByIdAsync(Guid id);
+        Task<Usuario?> GetByEmailAsync(string email);
         Task AddAsync(Usuario usuario);
         Task UpdateAsync(Usuario usuario);
         Task DeleteAsync(Usuario usuario);

@@ -15,6 +15,9 @@ namespace connectasys_api.Infrastructure.Persistence.Repositories
 
         public async Task<Usuario?> GetByIdAsync(Guid id) => await _context.Usuarios.FindAsync(id);
 
+        public async Task<Usuario?> GetByEmailAsync(string email) =>
+            await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
+
         public async Task AddAsync(Usuario usuario)
         {
             _context.Usuarios.Add(usuario);
