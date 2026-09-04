@@ -53,3 +53,24 @@
 **Status geral: concluído.** Testado ponta a ponta via API real,
 incluindo o cálculo de valor total, a validação cruzada
 cliente/veículo, e o cascade de remoção de itens.
+
+## Bug encontrado depois da integração com o front
+
+- [x] `POST /api/OrdensServico` com `previsaoTermino` preenchido (ex.:
+      `"2026-09-10"`, formato que `<input type="date">` manda, sem
+      fuso) dava `500`: Npgsql rejeita `DateTime` com
+      `Kind=Unspecified` em coluna `timestamptz`. Bug estrutural — não
+      específico da OS, qualquer campo `DateTime?` do sistema estava
+      exposto (ex.: datas de Contas a Pagar/Receber também usam
+      `<input type="date">` no front).
+- [x] Corrigido de forma global em
+      `Infrastructure/Persistence/Context/AppDbContext.cs`:
+      `UtcDateTimeConverter` aplicado via `ConfigureConventions` a
+      toda propriedade `DateTime`/`DateTime?` do modelo — normaliza
+      pra `Kind=Utc` antes de gravar, sem precisar tocar em cada
+      handler.
+- [x] Nenhuma migration necessária (`dotnet ef migrations add
+      --dry-run` confirmou: sem mudança de schema, só conversão em
+      runtime)
+- [x] Testado: `previsaoTermino: "2026-09-10"` (sem `Z`, sem hora) →
+      `201`, valor salvo corretamente; registro de teste removido
