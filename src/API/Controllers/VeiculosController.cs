@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using connectasys_api.Core.Application.Commands.Veiculos.CreateVeiculo;
 using connectasys_api.Core.Application.Commands.Veiculos.UpdateVeiculo;
@@ -11,6 +12,7 @@ namespace connectasys_api.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class VeiculosController : ControllerBase
     {
         private readonly IMediator _mediator;

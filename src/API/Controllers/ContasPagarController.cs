@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using connectasys_api.Core.Application.Commands.ContasPagar.CreateContaPagar;
 using connectasys_api.Core.Application.Commands.ContasPagar.UpdateContaPagar;
@@ -10,6 +11,7 @@ namespace connectasys_api.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ContasPagarController : ControllerBase
     {
         private readonly IMediator _mediator;

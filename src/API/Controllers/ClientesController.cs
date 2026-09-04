@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using connectasys_api.Core.Application.Commands.Clientes.CreateCliente;
 using connectasys_api.Core.Application.Commands.Clientes.UpdateCliente;
@@ -10,6 +11,7 @@ namespace connectasys_api.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ClientesController : ControllerBase
     {
         private readonly IMediator _mediator;

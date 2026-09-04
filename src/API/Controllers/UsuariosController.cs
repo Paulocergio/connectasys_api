@@ -1,15 +1,18 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using connectasys_api.Core.Application.Commands.Usuarios.CreateUsuario;
 using connectasys_api.Core.Application.Commands.Usuarios.UpdateUsuario;
 using connectasys_api.Core.Application.Commands.Usuarios.DeleteUsuario;
 using connectasys_api.Core.Application.Queries.Usuarios.GetAllUsuarios;
 using connectasys_api.Core.Application.Queries.Usuarios.GetUsuarioById;
+using connectasys_api.Core.Application.Common;
 
 namespace connectasys_api.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = Roles.Admin)]
     public class UsuariosController : ControllerBase
     {
         private readonly IMediator _mediator;
