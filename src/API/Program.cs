@@ -23,6 +23,7 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IVeiculoRepository, VeiculoRepository>();
 builder.Services.AddScoped<IContaPagarRepository, ContaPagarRepository>();
 builder.Services.AddScoped<IContaReceberRepository, ContaReceberRepository>();
+builder.Services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddMemoryCache();

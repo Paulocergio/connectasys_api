@@ -13,6 +13,8 @@ namespace connectasys_api.Infrastructure.Persistence.Context
         public DbSet<Veiculo> Veiculos => Set<Veiculo>();
         public DbSet<ContaPagar> ContasPagar => Set<ContaPagar>();
         public DbSet<ContaReceber> ContasReceber => Set<ContaReceber>();
+        public DbSet<OrdemServico> OrdensServico => Set<OrdemServico>();
+        public DbSet<ItemOrdemServico> ItensOrdemServico => Set<ItemOrdemServico>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
