@@ -24,6 +24,9 @@ namespace connectasys_api.Infrastructure.Persistence.Configurations
             builder.Property(c => c.Municipio).HasColumnName("municipio").HasMaxLength(100);
             builder.Property(c => c.Uf).HasColumnName("uf").HasMaxLength(2);
             builder.Property(c => c.DataCadastro).HasColumnName("data_cadastro");
+
+            builder.HasIndex(c => c.Cpf).IsUnique();
+            builder.HasIndex(c => c.Cnpj).IsUnique();
         }
     }
 }

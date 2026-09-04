@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using connectasys_api.Core.Application.Exceptions;
 using connectasys_api.Core.Application.Interfaces.Repositories;
 using connectasys_api.Core.Domain.Entities;
 using connectasys_api.Infrastructure.Persistence.Context;
@@ -24,14 +26,31 @@ namespace connectasys_api.Infrastructure.Persistence.Repositories
         public async Task AddAsync(Cliente cliente)
         {
             _context.Clientes.Add(cliente);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex) when (EhViolacaoDeDocumentoDuplicado(ex))
+            {
+                throw new DocumentoDuplicadoException();
+            }
         }
 
         public async Task UpdateAsync(Cliente cliente)
         {
             _context.Clientes.Update(cliente);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex) when (EhViolacaoDeDocumentoDuplicado(ex))
+            {
+                throw new DocumentoDuplicadoException();
+            }
         }
+
+        private static bool EhViolacaoDeDocumentoDuplicado(DbUpdateException ex) =>
+            ex.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation };
 
         public async Task DeleteAsync(Cliente cliente)
         {

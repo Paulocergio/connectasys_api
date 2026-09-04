@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using connectasys_api.Core.Application.DTOs;
+using connectasys_api.Core.Application.Exceptions;
 using connectasys_api.Core.Application.Interfaces.Repositories;
 using connectasys_api.Core.Domain.Entities;
 
@@ -35,7 +36,14 @@ namespace connectasys_api.Core.Application.Commands.Clientes.CreateCliente
                 DataCadastro = DateTime.UtcNow
             };
 
-            await _repository.AddAsync(cliente);
+            try
+            {
+                await _repository.AddAsync(cliente);
+            }
+            catch (DocumentoDuplicadoException)
+            {
+                return null;
+            }
 
             return new ClienteDto
             {

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using connectasys_api.Core.Application.Exceptions;
 using connectasys_api.Core.Application.Interfaces.Repositories;
 
 namespace connectasys_api.Core.Application.Commands.Clientes.UpdateCliente
@@ -38,7 +39,15 @@ namespace connectasys_api.Core.Application.Commands.Clientes.UpdateCliente
             cliente.Municipio = request.Municipio;
             cliente.Uf = request.Uf;
 
-            await _repository.UpdateAsync(cliente);
+            try
+            {
+                await _repository.UpdateAsync(cliente);
+            }
+            catch (DocumentoDuplicadoException)
+            {
+                return UpdateClienteResult.DocumentoEmUso;
+            }
+
             return UpdateClienteResult.Success;
         }
     }
