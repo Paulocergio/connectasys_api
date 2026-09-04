@@ -12,7 +12,7 @@ namespace connectasys_api.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize]
     public class UsuariosController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -30,6 +30,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Create(CreateUsuarioCommand command)
         {
             var resultado = await _mediator.Send(command);
@@ -46,6 +47,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Update(Guid id, UpdateUsuarioCommand command)
         {
             if (id != command.Id) return BadRequest();
@@ -62,6 +64,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Delete(Guid id)
         {
             var success = await _mediator.Send(new DeleteUsuarioCommand { Id = id });
