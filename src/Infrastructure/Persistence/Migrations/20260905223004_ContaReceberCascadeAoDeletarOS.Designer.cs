@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using connectasys_api.Infrastructure.Persistence.Context;
@@ -11,9 +12,11 @@ using connectasys_api.Infrastructure.Persistence.Context;
 namespace connectasys_api.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260905223004_ContaReceberCascadeAoDeletarOS")]
+    partial class ContaReceberCascadeAoDeletarOS
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -204,51 +207,6 @@ namespace connectasys_api.Infrastructure.Persistence.Migrations
                     b.ToTable("contas_receber", (string)null);
                 });
 
-            modelBuilder.Entity("connectasys_api.Core.Domain.Entities.Estoque", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DataCadastro")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("data_cadastro");
-
-                    b.Property<string>("Descricao")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("descricao");
-
-                    b.Property<decimal>("EstoqueMinimo")
-                        .HasColumnType("numeric(10,2)")
-                        .HasColumnName("estoque_minimo");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("nome");
-
-                    b.Property<decimal>("PrecoCompra")
-                        .HasColumnType("numeric(10,2)")
-                        .HasColumnName("preco_compra");
-
-                    b.Property<decimal>("PrecoVenda")
-                        .HasColumnType("numeric(10,2)")
-                        .HasColumnName("preco_venda");
-
-                    b.Property<decimal>("Quantidade")
-                        .HasColumnType("numeric(10,2)")
-                        .HasColumnName("quantidade");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("estoque", (string)null);
-                });
-
             modelBuilder.Entity("connectasys_api.Core.Domain.Entities.ItemOrdemServico", b =>
                 {
                     b.Property<int>("Id")
@@ -264,10 +222,6 @@ namespace connectasys_api.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("descricao");
 
-                    b.Property<int?>("EstoqueId")
-                        .HasColumnType("integer")
-                        .HasColumnName("estoque_id");
-
                     b.Property<int>("OrdemServicoId")
                         .HasColumnType("integer")
                         .HasColumnName("ordem_servico_id");
@@ -281,8 +235,6 @@ namespace connectasys_api.Infrastructure.Persistence.Migrations
                         .HasColumnName("valor_unitario");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EstoqueId");
 
                     b.HasIndex("OrdemServicoId");
 
@@ -486,11 +438,6 @@ namespace connectasys_api.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("connectasys_api.Core.Domain.Entities.ItemOrdemServico", b =>
                 {
-                    b.HasOne("connectasys_api.Core.Domain.Entities.Estoque", null)
-                        .WithMany()
-                        .HasForeignKey("EstoqueId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("connectasys_api.Core.Domain.Entities.OrdemServico", null)
                         .WithMany("Itens")
                         .HasForeignKey("OrdemServicoId")

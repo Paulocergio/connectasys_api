@@ -55,5 +55,23 @@ namespace connectasys_api.Infrastructure.Persistence.Repositories
             _context.ItensOrdemServico.Remove(item);
             await _context.SaveChangesAsync();
         }
+
+        public async Task SalvarComContaReceberAsync(
+            OrdemServico ordemServico,
+            ContaReceber? contaReceberNova,
+            ContaReceber? contaReceberParaAtualizar,
+            ContaReceber? contaReceberParaRemover)
+        {
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            _context.OrdensServico.Update(ordemServico);
+            if (contaReceberNova is not null)
+                _context.ContasReceber.Add(contaReceberNova);
+            if (contaReceberParaAtualizar is not null)
+                _context.ContasReceber.Update(contaReceberParaAtualizar);
+            if (contaReceberParaRemover is not null)
+                _context.ContasReceber.Remove(contaReceberParaRemover);
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+        }
     }
 }

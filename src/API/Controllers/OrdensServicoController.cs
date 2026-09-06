@@ -75,8 +75,18 @@ namespace connectasys_api.API.Controllers
         public async Task<IActionResult> AddItem(int id, AddItemOrdemServicoCommand command)
         {
             if (id != command.OrdemServicoId) return BadRequest();
-            var result = await _mediator.Send(command);
-            return result is null ? NotFound("Ordem de serviço não encontrada.") : Ok(result);
+            var resultado = await _mediator.Send(command);
+            return resultado.Resultado switch
+            {
+                AddItemOrdemServicoResultado.Sucesso => Ok(resultado.Item),
+                AddItemOrdemServicoResultado.OrdemServicoNaoEncontrada =>
+                    NotFound("Ordem de serviço não encontrada."),
+                AddItemOrdemServicoResultado.EstoqueNaoEncontrado =>
+                    BadRequest(new { message = "Peça de estoque não encontrada." }),
+                AddItemOrdemServicoResultado.EstoqueInsuficiente =>
+                    BadRequest(new { message = "Quantidade insuficiente em estoque." }),
+                _ => StatusCode(500)
+            };
         }
 
         [HttpDelete("itens/{itemId}")]

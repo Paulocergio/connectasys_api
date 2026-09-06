@@ -18,6 +18,9 @@ namespace connectasys_api.Infrastructure.Persistence.Repositories
         public async Task<List<ContaReceber>> GetByClienteIdAsync(int clienteId) =>
             await _context.ContasReceber.Where(c => c.ClienteId == clienteId).ToListAsync();
 
+        public async Task<ContaReceber?> GetByOrdemServicoIdAsync(int ordemServicoId) =>
+            await _context.ContasReceber.FirstOrDefaultAsync(c => c.OrdemServicoId == ordemServicoId);
+
         public async Task AddAsync(ContaReceber contaReceber)
         {
             _context.ContasReceber.Add(contaReceber);

@@ -24,6 +24,7 @@ builder.Services.AddScoped<IVeiculoRepository, VeiculoRepository>();
 builder.Services.AddScoped<IContaPagarRepository, ContaPagarRepository>();
 builder.Services.AddScoped<IContaReceberRepository, ContaReceberRepository>();
 builder.Services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
+builder.Services.AddScoped<IEstoqueRepository, EstoqueRepository>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddMemoryCache();
@@ -64,15 +65,28 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-const string DevCorsPolicy = "DevCors";
+const string AppCorsPolicy = "AppCors";
 builder.Services.AddCors(options =>
 {
-    // Dev-only: libera qualquer origem em localhost/127.0.0.1 (a porta do Vite/hub pode variar).
-    // Sem AllowCredentials porque a autenticação usa Bearer token, não cookie.
-    options.AddPolicy(DevCorsPolicy, policy =>
-        policy.SetIsOriginAllowed(origin => new Uri(origin).IsLoopback)
+    options.AddPolicy(AppCorsPolicy, policy =>
+    {
+        if (builder.Environment.IsDevelopment())
+        {
+            // Dev-only: libera qualquer origem em localhost/127.0.0.1 (a porta do Vite/hub pode variar).
+            // Sem AllowCredentials porque a autenticação usa Bearer token, não cookie.
+            policy.SetIsOriginAllowed(origin => new Uri(origin).IsLoopback)
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+            return;
+        }
+
+        var allowedOrigins = (builder.Configuration["Cors:AllowedOrigins"] ?? string.Empty)
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
-              .AllowAnyMethod());
+              .AllowAnyMethod();
+    });
 });
 
 var app = builder.Build();
@@ -94,19 +108,23 @@ app.UseExceptionHandler(errorApp =>
     });
 });
 
-if (app.Environment.IsDevelopment())
+var enableSwagger = app.Environment.IsDevelopment()
+    || builder.Configuration.GetValue<bool>("EnableSwagger");
+
+if (enableSwagger)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else
+
+if (!app.Environment.IsDevelopment())
 {
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 
-app.UseCors(DevCorsPolicy);
+app.UseCors(AppCorsPolicy);
 
 app.UseAuthentication();
 app.UseAuthorization();

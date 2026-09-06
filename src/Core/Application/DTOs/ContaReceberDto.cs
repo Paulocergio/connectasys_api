@@ -11,5 +11,6 @@ namespace connectasys_api.Core.Application.DTOs
         public string? FormaPagamento { get; set; }
         public string Status { get; set; } = string.Empty;
         public DateTime DataCadastro { get; set; }
+        public int? OrdemServicoId { get; set; }
     }
 }

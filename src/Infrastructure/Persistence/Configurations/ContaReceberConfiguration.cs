@@ -19,11 +19,17 @@ namespace connectasys_api.Infrastructure.Persistence.Configurations
             builder.Property(c => c.DataRecebimento).HasColumnName("data_recebimento");
             builder.Property(c => c.FormaPagamento).HasColumnName("forma_pagamento").HasMaxLength(20);
             builder.Property(c => c.DataCadastro).HasColumnName("data_cadastro");
+            builder.Property(c => c.OrdemServicoId).HasColumnName("ordem_servico_id");
 
             builder.HasOne<Cliente>()
                 .WithMany()
                 .HasForeignKey(c => c.ClienteId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne<OrdemServico>()
+                .WithMany()
+                .HasForeignKey(c => c.OrdemServicoId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

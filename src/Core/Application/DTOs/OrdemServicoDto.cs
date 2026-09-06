@@ -30,7 +30,8 @@ namespace connectasys_api.Core.Application.DTOs
                 OrdemServicoId = i.OrdemServicoId,
                 Descricao = i.Descricao,
                 Quantidade = i.Quantidade,
-                ValorUnitario = i.ValorUnitario
+                ValorUnitario = i.ValorUnitario,
+                EstoqueId = i.EstoqueId
             }).ToList();
 
             var valorItens = itens.Sum(i => i.Quantidade * i.ValorUnitario);

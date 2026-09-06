@@ -10,5 +10,6 @@ namespace connectasys_api.Core.Domain.Entities
         public DateTime? DataRecebimento { get; set; }
         public string? FormaPagamento { get; set; }
         public DateTime DataCadastro { get; set; } = DateTime.UtcNow;
+        public int? OrdemServicoId { get; set; }
     }
 }

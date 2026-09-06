@@ -7,6 +7,7 @@ namespace connectasys_api.Core.Application.Interfaces.Repositories
         Task<List<ContaReceber>> GetAllAsync();
         Task<ContaReceber?> GetByIdAsync(int id);
         Task<List<ContaReceber>> GetByClienteIdAsync(int clienteId);
+        Task<ContaReceber?> GetByOrdemServicoIdAsync(int ordemServicoId);
         Task AddAsync(ContaReceber contaReceber);
         Task UpdateAsync(ContaReceber contaReceber);
         Task DeleteAsync(ContaReceber contaReceber);

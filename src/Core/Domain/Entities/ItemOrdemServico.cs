@@ -7,5 +7,6 @@ namespace connectasys_api.Core.Domain.Entities
         public string Descricao { get; set; } = string.Empty;
         public decimal Quantidade { get; set; }
         public decimal ValorUnitario { get; set; }
+        public int? EstoqueId { get; set; }
     }
 }

@@ -15,5 +15,11 @@ namespace connectasys_api.Core.Application.Interfaces.Repositories
         Task<ItemOrdemServico?> GetItemByIdAsync(int itemId);
         Task AddItemAsync(ItemOrdemServico item);
         Task RemoveItemAsync(ItemOrdemServico item);
+
+        Task SalvarComContaReceberAsync(
+            OrdemServico ordemServico,
+            ContaReceber? contaReceberNova,
+            ContaReceber? contaReceberParaAtualizar,
+            ContaReceber? contaReceberParaRemover);
     }
 }
