@@ -13,5 +13,6 @@ namespace connectasys_api.Core.Domain.Entities
         public DateTime DataCriacaoUtc { get; set; } = DateTime.UtcNow;
         public string Telefone { get; set; } = string.Empty;
         public string SenhaHash { get; set; } = string.Empty;
+        public string Tema { get; set; } = "light";
     }
 }

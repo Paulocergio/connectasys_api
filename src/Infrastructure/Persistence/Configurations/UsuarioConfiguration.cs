@@ -20,6 +20,7 @@ namespace connectasys_api.Infrastructure.Persistence.Configurations
             builder.Property(u => u.Role).HasColumnName("role").HasMaxLength(20);
             builder.Property(u => u.Telefone).HasColumnName("telefone").HasMaxLength(20);
             builder.Property(u => u.SenhaHash).HasColumnName("senha_hash").HasMaxLength(60);
+            builder.Property(u => u.Tema).HasColumnName("tema").HasMaxLength(10).HasDefaultValue("light");
             builder.Property(u => u.DataCriacaoUtc).HasColumnName("data_criacao_utc");
 
             builder.HasIndex(u => u.Email).IsUnique();

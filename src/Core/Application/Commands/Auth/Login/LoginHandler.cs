@@ -75,7 +75,8 @@ namespace connectasys_api.Core.Application.Commands.Auth.Login
                     ExpiraEmUtc = expiraEmUtc,
                     UsuarioId = usuario.Id,
                     Nome = usuario.Nome,
-                    Role = usuario.Role
+                    Role = usuario.Role,
+                    Tema = usuario.Tema
                 }
             };
         }

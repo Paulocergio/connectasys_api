@@ -1,8 +1,11 @@
-﻿using MediatR;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using connectasys_api.Core.Application.Commands.Usuarios.CreateUsuario;
 using connectasys_api.Core.Application.Commands.Usuarios.UpdateUsuario;
+using connectasys_api.Core.Application.Commands.Usuarios.UpdateTemaUsuario;
 using connectasys_api.Core.Application.Commands.Usuarios.DeleteUsuario;
 using connectasys_api.Core.Application.Queries.Usuarios.GetAllUsuarios;
 using connectasys_api.Core.Application.Queries.Usuarios.GetUsuarioById;
@@ -63,6 +66,17 @@ namespace connectasys_api.API.Controllers
             };
         }
 
+        [HttpPatch("me/tema")]
+        public async Task<IActionResult> AtualizarMeuTema(AtualizarTemaRequest body)
+        {
+            var idClaim = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
+                ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!Guid.TryParse(idClaim, out var id)) return Unauthorized();
+
+            var sucesso = await _mediator.Send(new UpdateTemaUsuarioCommand { Id = id, Tema = body.Tema });
+            return sucesso ? NoContent() : BadRequest(new { message = "Tema inválido. Use light ou dark." });
+        }
+
         [HttpDelete("{id}")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Delete(Guid id)
@@ -70,5 +84,10 @@ namespace connectasys_api.API.Controllers
             var success = await _mediator.Send(new DeleteUsuarioCommand { Id = id });
             return success ? NoContent() : NotFound();
         }
+    }
+
+    public class AtualizarTemaRequest
+    {
+        public string Tema { get; set; } = string.Empty;
     }
 }
