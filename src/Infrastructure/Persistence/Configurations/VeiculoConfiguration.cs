@@ -18,6 +18,7 @@ namespace connectasys_api.Infrastructure.Persistence.Configurations
             builder.Property(v => v.Modelo).HasColumnName("modelo").HasMaxLength(50);
             builder.Property(v => v.Ano).HasColumnName("ano");
             builder.Property(v => v.Cor).HasColumnName("cor").HasMaxLength(30);
+            builder.Property(v => v.Tipo).HasColumnName("tipo").HasMaxLength(20).HasDefaultValue("Carro");
             builder.Property(v => v.DataCadastro).HasColumnName("data_cadastro");
 
             builder.HasOne<Cliente>()

@@ -37,7 +37,7 @@ namespace connectasys_api.API.Controllers
         public async Task<IActionResult> Create(CreateVeiculoCommand command)
         {
             var result = await _mediator.Send(command);
-            if (result is null) return BadRequest("ClienteId inválido.");
+            if (result is null) return BadRequest("ClienteId ou tipo inválido.");
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
@@ -52,6 +52,7 @@ namespace connectasys_api.API.Controllers
                 UpdateVeiculoResult.Success => NoContent(),
                 UpdateVeiculoResult.VeiculoNotFound => NotFound(),
                 UpdateVeiculoResult.ClienteInvalido => BadRequest("ClienteId inválido."),
+                UpdateVeiculoResult.TipoInvalido => BadRequest("Tipo inválido. Use Carro, Moto, Caminhão ou Outros."),
                 _ => StatusCode(500)
             };
         }

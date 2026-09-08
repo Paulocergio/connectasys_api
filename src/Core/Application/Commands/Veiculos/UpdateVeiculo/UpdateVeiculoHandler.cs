@@ -1,4 +1,5 @@
 using MediatR;
+using connectasys_api.Core.Application.Common;
 using connectasys_api.Core.Application.Interfaces.Repositories;
 
 namespace connectasys_api.Core.Application.Commands.Veiculos.UpdateVeiculo
@@ -22,12 +23,15 @@ namespace connectasys_api.Core.Application.Commands.Veiculos.UpdateVeiculo
             var cliente = await _clienteRepository.GetByIdAsync(request.ClienteId);
             if (cliente is null) return UpdateVeiculoResult.ClienteInvalido;
 
+            if (!TiposVeiculo.EhValido(request.Tipo)) return UpdateVeiculoResult.TipoInvalido;
+
             veiculo.ClienteId = request.ClienteId;
             veiculo.Placa = request.Placa;
             veiculo.Marca = request.Marca;
             veiculo.Modelo = request.Modelo;
             veiculo.Ano = request.Ano;
             veiculo.Cor = request.Cor;
+            veiculo.Tipo = request.Tipo;
 
             await _repository.UpdateAsync(veiculo);
             return UpdateVeiculoResult.Success;

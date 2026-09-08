@@ -24,6 +24,7 @@ namespace connectasys_api.Core.Application.Queries.Veiculos.GetVeiculoById
                 Modelo = veiculo.Modelo,
                 Ano = veiculo.Ano,
                 Cor = veiculo.Cor,
+                Tipo = veiculo.Tipo,
                 DataCadastro = veiculo.DataCadastro
             };
         }

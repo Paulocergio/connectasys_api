@@ -23,6 +23,7 @@ namespace connectasys_api.Core.Application.Queries.Veiculos.GetAllVeiculos
                 Modelo = v.Modelo,
                 Ano = v.Ano,
                 Cor = v.Cor,
+                Tipo = v.Tipo,
                 DataCadastro = v.DataCadastro
             }).ToList();
         }

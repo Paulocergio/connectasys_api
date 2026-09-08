@@ -1,4 +1,5 @@
 using MediatR;
+using connectasys_api.Core.Application.Common;
 using connectasys_api.Core.Application.DTOs;
 using connectasys_api.Core.Application.Interfaces.Repositories;
 using connectasys_api.Core.Domain.Entities;
@@ -21,6 +22,8 @@ namespace connectasys_api.Core.Application.Commands.Veiculos.CreateVeiculo
             var cliente = await _clienteRepository.GetByIdAsync(request.ClienteId);
             if (cliente is null) return null;
 
+            if (!TiposVeiculo.EhValido(request.Tipo)) return null;
+
             var veiculo = new Veiculo
             {
                 ClienteId = request.ClienteId,
@@ -29,6 +32,7 @@ namespace connectasys_api.Core.Application.Commands.Veiculos.CreateVeiculo
                 Modelo = request.Modelo,
                 Ano = request.Ano,
                 Cor = request.Cor,
+                Tipo = request.Tipo,
                 DataCadastro = DateTime.UtcNow
             };
 
@@ -43,6 +47,7 @@ namespace connectasys_api.Core.Application.Commands.Veiculos.CreateVeiculo
                 Modelo = veiculo.Modelo,
                 Ano = veiculo.Ano,
                 Cor = veiculo.Cor,
+                Tipo = veiculo.Tipo,
                 DataCadastro = veiculo.DataCadastro
             };
         }
