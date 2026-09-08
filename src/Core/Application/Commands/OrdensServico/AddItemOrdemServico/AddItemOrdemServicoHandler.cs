@@ -65,9 +65,9 @@ namespace connectasys_api.Core.Application.Commands.OrdensServico.AddItemOrdemSe
             if (contaExistente is not null)
             {
                 var ordemServicoAtualizada = await _repository.GetByIdAsync(ordemServico.Id);
-                var valorTotal = ordemServicoAtualizada!.ValorMaoDeObra
-                    + ordemServicoAtualizada.Itens.Sum(i => i.Quantidade * i.ValorUnitario)
-                    - ordemServicoAtualizada.Desconto;
+                var subtotal = ordemServicoAtualizada!.ValorMaoDeObra
+                    + ordemServicoAtualizada.Itens.Sum(i => i.Quantidade * i.ValorUnitario);
+                var valorTotal = subtotal - subtotal * ordemServicoAtualizada.Desconto / 100m;
 
                 contaExistente.Valor = valorTotal;
                 await _contaReceberRepository.UpdateAsync(contaExistente);

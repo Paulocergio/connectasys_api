@@ -16,6 +16,8 @@ namespace connectasys_api.Core.Domain.Entities
         public DateTime? PrevisaoTermino { get; set; }
         public DateTime? DataConclusao { get; set; }
         public decimal ValorMaoDeObra { get; set; }
+
+        /// Percentual de desconto (0 a 100) aplicado sobre mão de obra + itens.
         public decimal Desconto { get; set; }
         public DateTime? AprovacaoClienteEm { get; set; }
         public string? AprovacaoClienteNome { get; set; }

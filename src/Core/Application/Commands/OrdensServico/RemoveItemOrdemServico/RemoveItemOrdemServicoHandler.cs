@@ -46,9 +46,9 @@ namespace connectasys_api.Core.Application.Commands.OrdensServico.RemoveItemOrde
                 var ordemServico = await _repository.GetByIdAsync(ordemServicoId);
                 if (ordemServico is not null)
                 {
-                    var valorTotal = ordemServico.ValorMaoDeObra
-                        + ordemServico.Itens.Sum(i => i.Quantidade * i.ValorUnitario)
-                        - ordemServico.Desconto;
+                    var subtotal = ordemServico.ValorMaoDeObra
+                        + ordemServico.Itens.Sum(i => i.Quantidade * i.ValorUnitario);
+                    var valorTotal = subtotal - subtotal * ordemServico.Desconto / 100m;
 
                     contaExistente.Valor = valorTotal;
                     await _contaReceberRepository.UpdateAsync(contaExistente);

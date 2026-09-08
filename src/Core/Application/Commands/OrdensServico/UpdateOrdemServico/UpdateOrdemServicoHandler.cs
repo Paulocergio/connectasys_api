@@ -55,7 +55,7 @@ namespace connectasys_api.Core.Application.Commands.OrdensServico.UpdateOrdemSer
             ordemServico.PrevisaoTermino = request.PrevisaoTermino;
             ordemServico.DataConclusao = request.DataConclusao;
             ordemServico.ValorMaoDeObra = request.ValorMaoDeObra;
-            ordemServico.Desconto = request.Desconto;
+            ordemServico.Desconto = Math.Clamp(request.Desconto, 0, 100);
             ordemServico.AprovacaoClienteEm = request.AprovacaoClienteEm;
             ordemServico.AprovacaoClienteNome = request.AprovacaoClienteNome;
 
@@ -64,9 +64,9 @@ namespace connectasys_api.Core.Application.Commands.OrdensServico.UpdateOrdemSer
 
             var contaExistente = await _contaReceberRepository.GetByOrdemServicoIdAsync(ordemServico.Id);
 
-            var valorTotal = ordemServico.ValorMaoDeObra
-                + ordemServico.Itens.Sum(i => i.Quantidade * i.ValorUnitario)
-                - ordemServico.Desconto;
+            var subtotal = ordemServico.ValorMaoDeObra
+                + ordemServico.Itens.Sum(i => i.Quantidade * i.ValorUnitario);
+            var valorTotal = subtotal - subtotal * ordemServico.Desconto / 100m;
 
             ContaReceber? contaNova = null;
             ContaReceber? contaParaAtualizar = null;

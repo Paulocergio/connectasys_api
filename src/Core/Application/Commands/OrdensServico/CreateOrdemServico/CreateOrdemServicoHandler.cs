@@ -43,7 +43,7 @@ namespace connectasys_api.Core.Application.Commands.OrdensServico.CreateOrdemSer
                 DescricaoProblema = request.DescricaoProblema,
                 PrevisaoTermino = request.PrevisaoTermino,
                 ValorMaoDeObra = request.ValorMaoDeObra,
-                Desconto = request.Desconto,
+                Desconto = Math.Clamp(request.Desconto, 0, 100),
                 DataAbertura = DateTime.UtcNow
             };
 

@@ -35,6 +35,7 @@ namespace connectasys_api.Core.Application.DTOs
             }).ToList();
 
             var valorItens = itens.Sum(i => i.Quantidade * i.ValorUnitario);
+            var subtotal = o.ValorMaoDeObra + valorItens;
 
             return new OrdemServicoDto
             {
@@ -54,7 +55,7 @@ namespace connectasys_api.Core.Application.DTOs
                 AprovacaoClienteEm = o.AprovacaoClienteEm,
                 AprovacaoClienteNome = o.AprovacaoClienteNome,
                 Itens = itens,
-                ValorTotal = o.ValorMaoDeObra + valorItens - o.Desconto
+                ValorTotal = subtotal - subtotal * o.Desconto / 100m
             };
         }
     }
