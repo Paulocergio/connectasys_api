@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using connectasys_api.Core.Application.Common;
 using connectasys_api.Core.Application.Commands.ContasPagar.CreateContaPagar;
 using connectasys_api.Core.Application.Commands.ContasPagar.UpdateContaPagar;
 using connectasys_api.Core.Application.Commands.ContasPagar.DeleteContaPagar;
@@ -29,6 +30,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Financeiro}")]
         public async Task<IActionResult> Create(CreateContaPagarCommand command)
         {
             var result = await _mediator.Send(command);
@@ -36,6 +38,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Financeiro}")]
         public async Task<IActionResult> Update(int id, UpdateContaPagarCommand command)
         {
             if (id != command.Id) return BadRequest();
@@ -52,6 +55,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Financeiro}")]
         public async Task<IActionResult> Delete(int id)
         {
             var success = await _mediator.Send(new DeleteContaPagarCommand { Id = id });

@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using connectasys_api.Core.Application.Common;
 using connectasys_api.Core.Application.Commands.Veiculos.CreateVeiculo;
 using connectasys_api.Core.Application.Commands.Veiculos.UpdateVeiculo;
 using connectasys_api.Core.Application.Commands.Veiculos.DeleteVeiculo;
@@ -34,6 +35,7 @@ namespace connectasys_api.API.Controllers
             Ok(await _mediator.Send(new GetVeiculosByClienteIdQuery { ClienteId = clienteId }));
 
         [HttpPost]
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Recepcionista}")]
         public async Task<IActionResult> Create(CreateVeiculoCommand command)
         {
             var result = await _mediator.Send(command);
@@ -42,6 +44,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Recepcionista}")]
         public async Task<IActionResult> Update(int id, UpdateVeiculoCommand command)
         {
             if (id != command.Id) return BadRequest();
@@ -58,6 +61,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Recepcionista}")]
         public async Task<IActionResult> Delete(int id)
         {
             var success = await _mediator.Send(new DeleteVeiculoCommand { Id = id });

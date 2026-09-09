@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using connectasys_api.Core.Application.Common;
 using connectasys_api.Core.Application.Commands.Clientes.CreateCliente;
 using connectasys_api.Core.Application.Commands.Clientes.UpdateCliente;
 using connectasys_api.Core.Application.Commands.Clientes.DeleteCliente;
@@ -29,6 +30,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Create(CreateClienteCommand command)
         {
             var result = await _mediator.Send(command);
@@ -38,6 +40,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Update(int id, UpdateClienteCommand command)
         {
             if (id != command.Id) return BadRequest();
@@ -53,6 +56,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Delete(int id)
         {
             var success = await _mediator.Send(new DeleteClienteCommand { Id = id });

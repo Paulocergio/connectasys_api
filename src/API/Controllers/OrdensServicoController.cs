@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using connectasys_api.Core.Application.Common;
 using connectasys_api.Core.Application.Commands.OrdensServico.AddItemOrdemServico;
 using connectasys_api.Core.Application.Commands.OrdensServico.CreateOrdemServico;
 using connectasys_api.Core.Application.Commands.OrdensServico.DeleteOrdemServico;
@@ -41,6 +42,7 @@ namespace connectasys_api.API.Controllers
             Ok(await _mediator.Send(new GetOrdensServicoByVeiculoIdQuery { VeiculoId = veiculoId }));
 
         [HttpPost]
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Mecanico},{Roles.Recepcionista}")]
         public async Task<IActionResult> Create(CreateOrdemServicoCommand command)
         {
             var result = await _mediator.Send(command);
@@ -49,6 +51,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Mecanico},{Roles.Recepcionista}")]
         public async Task<IActionResult> Update(int id, UpdateOrdemServicoCommand command)
         {
             if (id != command.Id) return BadRequest();
@@ -65,6 +68,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Mecanico},{Roles.Recepcionista}")]
         public async Task<IActionResult> Delete(int id)
         {
             var success = await _mediator.Send(new DeleteOrdemServicoCommand { Id = id });
@@ -72,6 +76,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpPost("{id}/itens")]
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Mecanico},{Roles.Recepcionista}")]
         public async Task<IActionResult> AddItem(int id, AddItemOrdemServicoCommand command)
         {
             if (id != command.OrdemServicoId) return BadRequest();
@@ -90,6 +95,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpDelete("itens/{itemId}")]
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Mecanico},{Roles.Recepcionista}")]
         public async Task<IActionResult> RemoveItem(int itemId)
         {
             var success = await _mediator.Send(new RemoveItemOrdemServicoCommand { ItemId = itemId });

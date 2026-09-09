@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using connectasys_api.Core.Application.Common;
 using connectasys_api.Core.Application.Commands.Estoques.CreateEstoque;
 using connectasys_api.Core.Application.Commands.Estoques.UpdateEstoque;
 using connectasys_api.Core.Application.Commands.Estoques.DeleteEstoque;
@@ -29,6 +30,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Create(CreateEstoqueCommand command)
         {
             var result = await _mediator.Send(command);
@@ -36,6 +38,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Update(int id, UpdateEstoqueCommand command)
         {
             if (id != command.Id) return BadRequest();
@@ -50,6 +53,7 @@ namespace connectasys_api.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Delete(int id)
         {
             var success = await _mediator.Send(new DeleteEstoqueCommand { Id = id });
