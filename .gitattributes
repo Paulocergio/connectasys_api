@@ -3,6 +3,10 @@
 ###############################################################################
 * text=auto
 
+# Dumps de backup: nunca normalizar/converter quebra de linha (corrompe os
+# blocos COPY do pg_dump).
+backups/*.sql -text
+
 ###############################################################################
 # Set default behavior for command prompt diff.
 #
