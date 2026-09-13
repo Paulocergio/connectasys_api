@@ -5,6 +5,7 @@ namespace connectasys_api.Core.Domain.Entities
     public class Agendamento
     {
         public int Id { get; set; }
+        public Guid EmpresaId { get; set; }
         public Guid TecnicoId { get; set; }
         public int? ClienteId { get; set; }
         public int? VeiculoId { get; set; }

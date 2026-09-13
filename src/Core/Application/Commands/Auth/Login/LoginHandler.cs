@@ -13,17 +13,20 @@ namespace connectasys_api.Core.Application.Commands.Auth.Login
         private static readonly TimeSpan DuracaoBloqueio = TimeSpan.FromMinutes(15);
 
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IEmpresaRepository _empresaRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly ITokenService _tokenService;
         private readonly IMemoryCache _cache;
 
         public LoginHandler(
             IUsuarioRepository usuarioRepository,
+            IEmpresaRepository empresaRepository,
             IPasswordHasher passwordHasher,
             ITokenService tokenService,
             IMemoryCache cache)
         {
             _usuarioRepository = usuarioRepository;
+            _empresaRepository = empresaRepository;
             _passwordHasher = passwordHasher;
             _tokenService = tokenService;
             _cache = cache;
@@ -64,7 +67,18 @@ namespace connectasys_api.Core.Application.Commands.Auth.Login
             _cache.Remove(chaveTentativas);
             _cache.Remove(chaveBloqueado);
 
-            var (token, expiraEmUtc) = _tokenService.GerarToken(usuario.Id, usuario.Email, usuario.Nome, usuario.Role);
+            var empresa = await _empresaRepository.GetByIdAsync(usuario.EmpresaId);
+            if (empresa is not null && DateTime.UtcNow > empresa.TrialExpiraEm)
+            {
+                // Teste vencido: apaga tudo da empresa agora, no primeiro
+                // acesso depois do vencimento — sem processo em segundo
+                // plano, sem backup (ver contrato de aceite no cadastro).
+                await _empresaRepository.ApagarTudoAsync(empresa.Id);
+                return new LoginResultado { Status = LoginStatus.TesteExpirado };
+            }
+
+            var (token, expiraEmUtc) = _tokenService.GerarToken(
+                usuario.Id, usuario.EmpresaId, usuario.Email, usuario.Nome, usuario.Role);
 
             return new LoginResultado
             {
@@ -76,7 +90,8 @@ namespace connectasys_api.Core.Application.Commands.Auth.Login
                     UsuarioId = usuario.Id,
                     Nome = usuario.Nome,
                     Role = usuario.Role,
-                    Tema = usuario.Tema
+                    Tema = usuario.Tema,
+                    TrialExpiraEmUtc = empresa?.TrialExpiraEm ?? DateTime.MaxValue
                 }
             };
         }

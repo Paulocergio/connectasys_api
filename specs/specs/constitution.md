@@ -48,7 +48,7 @@ Estas ausências são decisões conscientes da fase atual do projeto, não esque
 - ❌ Sem hash de senha (senha é gravada em texto puro por enquanto)
 - ❌ Sem validação de entrada (FluentValidation ainda não adicionado)
 - ❌ Sem testes automatizados
-- ❌ Sem multi-tenant funcional (coluna `empresa_id` existe, mas não é usada pra filtrar nada ainda)
+- ✅ Multi-tenant funcional desde 2026-09-13 — entidade `Empresa`, `EmpresaId` em toda entidade de negócio, isolamento via `ITenantContext` nos repositórios, cadastro self-service com trial de 3 dias (`POST /api/Auth/registrar`). Ver `specs/multitenant/`.
 
 Qualquer spec nova pode assumir esse estado **a menos que a própria spec seja sobre implementar um desses itens**.
 

@@ -7,6 +7,7 @@ namespace connectasys_api.Core.Domain.Entities
     public class Usuario
     {
         public Guid Id { get; set; }
+        public Guid EmpresaId { get; set; }
         public string Nome { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;

@@ -7,7 +7,8 @@ namespace connectasys_api.Core.Application.Commands.Auth.Login
     {
         Sucesso,
         Invalido,
-        Bloqueado
+        Bloqueado,
+        TesteExpirado
     }
 
     public class LoginResultado

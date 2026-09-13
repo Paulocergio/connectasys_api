@@ -11,11 +11,16 @@ namespace connectasys_api.Core.Application.Commands.Usuarios.CreateUsuario
     {
         private readonly IUsuarioRepository _repository;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly ITenantContext _tenantContext;
 
-        public CreateUsuarioHandler(IUsuarioRepository repository, IPasswordHasher passwordHasher)
+        public CreateUsuarioHandler(
+            IUsuarioRepository repository,
+            IPasswordHasher passwordHasher,
+            ITenantContext tenantContext)
         {
             _repository = repository;
             _passwordHasher = passwordHasher;
+            _tenantContext = tenantContext;
         }
 
         public async Task<CriarUsuarioResultado> Handle(CreateUsuarioCommand request, CancellationToken cancellationToken)
@@ -30,6 +35,7 @@ namespace connectasys_api.Core.Application.Commands.Usuarios.CreateUsuario
             var usuario = new Usuario
             {
                 Id = Guid.NewGuid(),
+                EmpresaId = _tenantContext.EmpresaId,
                 Nome = request.Nome,
                 Email = request.Email,
                 Role = request.Role,

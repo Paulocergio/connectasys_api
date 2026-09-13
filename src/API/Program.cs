@@ -18,6 +18,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ITenantContext, TenantContext>();
+builder.Services.AddScoped<IEmpresaRepository, EmpresaRepository>();
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IVeiculoRepository, VeiculoRepository>();
@@ -128,6 +131,39 @@ app.UseHttpsRedirection();
 app.UseCors(AppCorsPolicy);
 
 app.UseAuthentication();
+
+// Trial expirado: bloqueia (e apaga os dados na primeira vez que
+// detecta) qualquer requisição autenticada de uma empresa cujo teste
+// já venceu — cobre a janela em que um token emitido antes do
+// vencimento (validade de até 60 min) ainda seria aceito pelo JWT em
+// si. O login (endpoint anônimo, sem token ainda) tem sua própria
+// checagem em LoginHandler; este middleware cobre todo o resto.
+app.Use(async (context, next) =>
+{
+    if (context.User.Identity?.IsAuthenticated == true)
+    {
+        var claim = context.User.FindFirst("empresa_id")?.Value;
+        if (Guid.TryParse(claim, out var empresaId))
+        {
+            var empresaRepository = context.RequestServices.GetRequiredService<IEmpresaRepository>();
+            var empresa = await empresaRepository.GetByIdAsync(empresaId);
+            if (empresa is not null && DateTime.UtcNow > empresa.TrialExpiraEm)
+            {
+                await empresaRepository.ApagarTudoAsync(empresaId);
+                context.Response.StatusCode = StatusCodes.Status402PaymentRequired;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    message = "Seu período de teste expirou. Entre em contato para continuar usando o ConnectaSys."
+                });
+                return;
+            }
+        }
+    }
+
+    await next();
+});
+
 app.UseAuthorization();
 app.UseRateLimiter();
 

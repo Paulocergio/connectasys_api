@@ -12,6 +12,7 @@ namespace connectasys_api.Infrastructure.Persistence.Configurations
             builder.HasKey(c => c.Id);
 
             builder.Property(c => c.Id).HasColumnName("id");
+            builder.Property(c => c.EmpresaId).HasColumnName("empresa_id");
             builder.Property(c => c.ClienteId).HasColumnName("cliente_id");
             builder.Property(c => c.Descricao).HasColumnName("descricao").HasMaxLength(200);
             builder.Property(c => c.Valor).HasColumnName("valor").HasColumnType("numeric(12,2)");
@@ -30,6 +31,11 @@ namespace connectasys_api.Infrastructure.Persistence.Configurations
                 .WithMany()
                 .HasForeignKey(c => c.OrdemServicoId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne<Empresa>()
+                .WithMany()
+                .HasForeignKey(c => c.EmpresaId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

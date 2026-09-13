@@ -13,7 +13,7 @@ namespace connectasys_api.Infrastructure.Security
 
         public TokenService(IConfiguration configuration) => _configuration = configuration;
 
-        public (string Token, DateTime ExpiraEmUtc) GerarToken(Guid usuarioId, string email, string nome, string role)
+        public (string Token, DateTime ExpiraEmUtc) GerarToken(Guid usuarioId, Guid empresaId, string email, string nome, string role)
         {
             var jwtSection = _configuration.GetSection("Jwt");
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection["Key"]!));
@@ -23,6 +23,7 @@ namespace connectasys_api.Infrastructure.Security
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, usuarioId.ToString()),
+                new Claim("empresa_id", empresaId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, email),
                 new Claim(ClaimTypes.Name, nome),
                 new Claim(ClaimTypes.Role, role)

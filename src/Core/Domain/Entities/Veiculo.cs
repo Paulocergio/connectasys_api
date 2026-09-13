@@ -5,6 +5,7 @@ namespace connectasys_api.Core.Domain.Entities
     public class Veiculo
     {
         public int Id { get; set; }
+        public Guid EmpresaId { get; set; }
         public int ClienteId { get; set; }
         public string Placa { get; set; } = string.Empty;
         public string Marca { get; set; } = string.Empty;

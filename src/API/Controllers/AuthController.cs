@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using connectasys_api.Core.Application.Commands.Auth.Login;
+using connectasys_api.Core.Application.Commands.Auth.Registrar;
 
 namespace connectasys_api.API.Controllers
 {
@@ -25,6 +26,23 @@ namespace connectasys_api.API.Controllers
                 LoginStatus.Bloqueado => StatusCode(
                     StatusCodes.Status429TooManyRequests,
                     new { message = "Muitas tentativas com essa conta. Tente novamente em alguns minutos." }),
+                LoginStatus.TesteExpirado => StatusCode(
+                    StatusCodes.Status402PaymentRequired,
+                    new { message = "Seu período de teste expirou. Entre em contato para continuar usando o ConnectaSys." }),
+                _ => StatusCode(500)
+            };
+        }
+
+        [HttpPost("registrar")]
+        [EnableRateLimiting("login")]
+        public async Task<IActionResult> Registrar(RegistrarCommand command)
+        {
+            var resultado = await _mediator.Send(command);
+            return resultado.Resultado switch
+            {
+                RegistrarResultado.Sucesso => Ok(resultado.Resposta),
+                RegistrarResultado.EmailEmUso =>
+                    Conflict(new { message = "Já existe uma conta cadastrada com este e-mail." }),
                 _ => StatusCode(500)
             };
         }

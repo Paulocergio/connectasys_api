@@ -12,6 +12,7 @@ namespace connectasys_api.Infrastructure.Persistence.Configurations
             builder.HasKey(c => c.Id);
 
             builder.Property(c => c.Id).HasColumnName("id");
+            builder.Property(c => c.EmpresaId).HasColumnName("empresa_id");
             builder.Property(c => c.Nome).HasColumnName("nome").HasMaxLength(150);
             builder.Property(c => c.Email).HasColumnName("email").HasMaxLength(256);
             builder.Property(c => c.Telefone).HasColumnName("telefone").HasMaxLength(20);
@@ -25,8 +26,15 @@ namespace connectasys_api.Infrastructure.Persistence.Configurations
             builder.Property(c => c.Uf).HasColumnName("uf").HasMaxLength(2);
             builder.Property(c => c.DataCadastro).HasColumnName("data_cadastro");
 
-            builder.HasIndex(c => c.Cpf).IsUnique();
-            builder.HasIndex(c => c.Cnpj).IsUnique();
+            // Único por empresa, não globalmente — duas oficinas diferentes
+            // podem legitimamente ter o mesmo cliente real (mesmo CPF/CNPJ).
+            builder.HasIndex(c => new { c.EmpresaId, c.Cpf }).IsUnique();
+            builder.HasIndex(c => new { c.EmpresaId, c.Cnpj }).IsUnique();
+
+            builder.HasOne<Empresa>()
+                .WithMany()
+                .HasForeignKey(c => c.EmpresaId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
