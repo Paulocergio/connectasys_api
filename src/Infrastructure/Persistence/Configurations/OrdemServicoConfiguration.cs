@@ -20,7 +20,6 @@ namespace connectasys_api.Infrastructure.Persistence.Configurations
             builder.Property(o => o.Diagnostico).HasColumnName("diagnostico").HasColumnType("text");
             builder.Property(o => o.Solucao).HasColumnName("solucao").HasColumnType("text");
             builder.Property(o => o.DataAbertura).HasColumnName("data_abertura");
-            builder.Property(o => o.PrevisaoTermino).HasColumnName("previsao_termino");
             builder.Property(o => o.DataConclusao).HasColumnName("data_conclusao");
             builder.Property(o => o.ValorMaoDeObra).HasColumnName("valor_mao_de_obra").HasColumnType("decimal(10,2)");
             builder.Property(o => o.Desconto).HasColumnName("desconto").HasColumnType("decimal(10,2)");

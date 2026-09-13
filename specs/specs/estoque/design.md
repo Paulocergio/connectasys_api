@@ -7,6 +7,13 @@
 > não tinha sido implantada em produção, a migration original
 > (`AddEstoque`) foi refeita do zero em vez de empilhar uma segunda —
 > ver `tasks.md`.
+>
+> **Revisão 3 (2026-09-13):** `EstoqueMinimo` removido — coluna cai
+> numa migration nova (a Fase 1/2 já está em produção desta vez, então
+> não dá pra refazer a migration original do zero como na Revisão 2;
+> tem que ser uma migration incremental de remoção). `Margem` continua
+> sem propriedade própria — só passa a virar duas contas no frontend
+> em vez de uma (Markup e Venda), sem qualquer mudança de schema.
 
 ## Entidade (`Core/Domain/Entities/Estoque.cs`)
 
@@ -19,14 +26,13 @@ public class Estoque
     public decimal Quantidade { get; set; }
     public decimal PrecoCompra { get; set; }
     public decimal PrecoVenda { get; set; }
-    public decimal EstoqueMinimo { get; set; }
     public DateTime DataCadastro { get; set; } = DateTime.UtcNow;
 }
 ```
 
-`Margem` não existe como propriedade — é sempre calculada
-(`(PrecoVenda - PrecoCompra) / PrecoCompra * 100`) no DTO/frontend, na
-hora de exibir.
+`EstoqueMinimo` removida (revisão 2026-09-13). `Margem` não existe
+como propriedade — é sempre calculada no frontend, nas duas variantes
+descritas no `spec.md` (Markup e Venda), na hora de exibir.
 
 ## `ItemOrdemServico` — campo novo
 

@@ -1,5 +1,12 @@
 # Spec — Estoque
 
+> **Revisão 2026-09-13** (pedido do usuário): campo `EstoqueMinimo`
+> removido por completo (backend, DTO, coluna da tabela) — junto some
+> o aviso de estoque baixo, que dependia dele. Sem mudança de campo no
+> backend pra Margem de Venda/Margem de Markup: continuam calculadas
+> só no frontend a partir de `PrecoCompra`/`PrecoVenda`, que já
+> existem — ver `specs/estoque/design.md` do `connectasys-hub`.
+
 ## Objetivo
 
 Permitir que a oficina cadastre e controle as peças e materiais que tem
@@ -38,15 +45,23 @@ remover o item da OS, a quantidade volta pro estoque.
 | Quantidade | decimal | sim | quantidade disponível no estoque |
 | PrecoCompra | decimal | sim | quanto a oficina pagou pela peça |
 | PrecoVenda | decimal | sim | quanto a oficina cobra do cliente (é o valor usado quando a peça é adicionada numa OS) |
-| EstoqueMinimo | decimal | não (default 0) | abaixo desse valor, a peça é sinalizada como estoque baixo |
 | DataCadastro | data/hora | não (automático) | preenchida na criação |
 
-`Margem` (percentual de lucro) **não é um campo gravado** —
-`(PrecoVenda − PrecoCompra) / PrecoCompra × 100`, calculado sempre em
-cima dos dois preços atuais (evita a margem exibida ficar
-desatualizada se um dos preços for editado depois). Ver `design.md`
-do frontend para a mecânica de edição bidirecional (editar a margem
-recalcula `PrecoVenda`, mantendo `PrecoCompra` fixo).
+`EstoqueMinimo` **removido (revisão 2026-09-13)** — não existe mais
+como campo, coluna, nem aviso de estoque baixo em nenhuma tela.
+
+`Margem` (percentual de lucro) **não é um campo gravado** — o
+frontend passa a calcular duas variantes a partir dos mesmos dois
+preços, sempre na hora (evita a margem exibida ficar desatualizada se
+um dos preços for editado depois):
+
+- Margem de Markup: `(PrecoVenda − PrecoCompra) / PrecoCompra × 100`
+  (era a única "margem" antes desta revisão).
+- Margem de Venda: `(PrecoVenda − PrecoCompra) / PrecoVenda × 100`.
+
+Ver `design.md` do frontend (`connectasys-hub`) para a mecânica de
+edição bidirecional (editar a Margem de Markup recalcula `PrecoVenda`,
+mantendo `PrecoCompra` fixo).
 
 ### Item da Ordem de Serviço — campo novo
 
@@ -127,6 +142,10 @@ recalcula `PrecoVenda`, mantendo `PrecoCompra` fixo).
   `PrecoVenda`; novo `PrecoCompra`; margem de lucro calculada, não
   gravada; `EstoqueMinimo` por peça, com aviso visual de estoque baixo
   na tela.
+- Decidido (revisão 3, 2026-09-13): `EstoqueMinimo` removido — a
+  oficina decidiu não usar o aviso de estoque baixo. Margem de lucro
+  vira duas variantes calculadas (Markup e Venda), ambas continuam sem
+  campo próprio no banco.
 - Suposição: `Quantidade` do estoque e dos itens de OS são `decimal`
   (mesmo tipo já usado em `ItemOrdemServico.Quantidade`), permitindo
   frações (ex.: 0,5 litro de óleo), não só números inteiros.

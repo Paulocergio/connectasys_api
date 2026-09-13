@@ -22,6 +22,66 @@ namespace connectasys_api.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("connectasys_api.Core.Domain.Entities.Agendamento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ClienteId")
+                        .HasColumnType("integer")
+                        .HasColumnName("cliente_id");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("data_cadastro");
+
+                    b.Property<DateTime?>("DataHoraFim")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("data_hora_fim");
+
+                    b.Property<DateTime>("DataHoraInicio")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("data_hora_inicio");
+
+                    b.Property<string>("Observacao")
+                        .HasColumnType("text")
+                        .HasColumnName("observacao");
+
+                    b.Property<int?>("OrdemServicoId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ordem_servico_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TecnicoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tecnico_id");
+
+                    b.Property<int?>("VeiculoId")
+                        .HasColumnType("integer")
+                        .HasColumnName("veiculo_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("OrdemServicoId");
+
+                    b.HasIndex("VeiculoId");
+
+                    b.HasIndex("TecnicoId", "DataHoraInicio");
+
+                    b.ToTable("agendamentos", (string)null);
+                });
+
             modelBuilder.Entity("connectasys_api.Core.Domain.Entities.Cliente", b =>
                 {
                     b.Property<int>("Id")
@@ -222,10 +282,6 @@ namespace connectasys_api.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(500)")
                         .HasColumnName("descricao");
 
-                    b.Property<decimal>("EstoqueMinimo")
-                        .HasColumnType("numeric(10,2)")
-                        .HasColumnName("estoque_minimo");
-
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -331,10 +387,6 @@ namespace connectasys_api.Infrastructure.Persistence.Migrations
                     b.Property<string>("Diagnostico")
                         .HasColumnType("text")
                         .HasColumnName("diagnostico");
-
-                    b.Property<DateTime?>("PrevisaoTermino")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("previsao_termino");
 
                     b.Property<string>("Solucao")
                         .HasColumnType("text")
@@ -484,6 +536,30 @@ namespace connectasys_api.Infrastructure.Persistence.Migrations
                     b.HasIndex("ClienteId");
 
                     b.ToTable("veiculos", (string)null);
+                });
+
+            modelBuilder.Entity("connectasys_api.Core.Domain.Entities.Agendamento", b =>
+                {
+                    b.HasOne("connectasys_api.Core.Domain.Entities.Cliente", null)
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("connectasys_api.Core.Domain.Entities.OrdemServico", null)
+                        .WithMany()
+                        .HasForeignKey("OrdemServicoId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("connectasys_api.Core.Domain.Entities.Usuario", null)
+                        .WithMany()
+                        .HasForeignKey("TecnicoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("connectasys_api.Core.Domain.Entities.Veiculo", null)
+                        .WithMany()
+                        .HasForeignKey("VeiculoId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("connectasys_api.Core.Domain.Entities.ContaReceber", b =>

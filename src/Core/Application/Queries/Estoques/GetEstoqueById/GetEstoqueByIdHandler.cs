@@ -23,7 +23,6 @@ namespace connectasys_api.Core.Application.Queries.Estoques.GetEstoqueById
                 Quantidade = estoque.Quantidade,
                 PrecoCompra = estoque.PrecoCompra,
                 PrecoVenda = estoque.PrecoVenda,
-                EstoqueMinimo = estoque.EstoqueMinimo,
                 DataCadastro = estoque.DataCadastro
             };
         }

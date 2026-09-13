@@ -22,7 +22,6 @@ namespace connectasys_api.Core.Application.Queries.Estoques.GetAllEstoque
                 Quantidade = e.Quantidade,
                 PrecoCompra = e.PrecoCompra,
                 PrecoVenda = e.PrecoVenda,
-                EstoqueMinimo = e.EstoqueMinimo,
                 DataCadastro = e.DataCadastro
             }).ToList();
         }

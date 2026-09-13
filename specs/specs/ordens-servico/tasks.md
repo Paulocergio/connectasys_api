@@ -74,3 +74,33 @@ cliente/veículo, e o cascade de remoção de itens.
       runtime)
 - [x] Testado: `previsaoTermino: "2026-09-10"` (sem `Z`, sem hora) →
       `201`, valor salvo corretamente; registro de teste removido
+
+## Ajustes pendentes (rodada de specs 2026-09-13)
+
+- [x] Remover `PrevisaoTermino` de `OrdemServico.cs`,
+      `OrdemServicoConfiguration.cs`, `OrdemServicoDto.cs`,
+      `Create`/`UpdateOrdemServicoCommand`
+  - Critério de pronto: `dotnet build` sem erros; nenhuma referência
+    a `PrevisaoTermino`/`previsao_termino` restante no projeto
+    (confirmado — só resta em migrations antigas, que preservam
+    histórico por design)
+
+- [x] Gerar e aplicar migration derrubando a coluna
+      `previsao_termino` de `ordens_servico`
+  - Migration `20260913144812_RemovePrevisaoTerminoDeOrdensServico`,
+    aplicada localmente (`ALTER TABLE ordens_servico DROP COLUMN
+    previsao_termino` confirmado no log do `dotnet ef database update`)
+
+- [x] Validar `TecnicoId` contra `Role = "Mecânico"` em
+      `Create`/`UpdateOrdemServicoHandler` (o enum `TecnicoInvalido` já
+      existia em `UpdateOrdemServicoResult`, reaproveitado; `Create`
+      passou a checar a role junto da existência do usuário)
+  - Testado via curl: `tecnicoId` de usuário Admin → `400`
+    ("ClienteId, VeiculoId ou TecnicoId inválido." no Create; "TecnicoId
+    inválido." no Update); `tecnicoId` de usuário Mecânico → `201`
+    normalmente; sem `tecnicoId` → continua opcional
+
+- [x] Testado via curl: os dois cenários acima end-to-end (usuário de
+      teste Mecânico criado, OS criada com sucesso, `GET` confirmado
+      sem `previsaoTermino` no payload, dados de teste removidos
+      depois)

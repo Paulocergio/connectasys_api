@@ -107,3 +107,23 @@ por peça com aviso de estoque baixo.
 - [x] Registros de teste removidos depois
 
 **Fase 5: concluída.**
+
+## Fase 6 — Remover Estoque Mínimo (revisão 2026-09-13)
+
+- [x] Remover `EstoqueMinimo` de `Estoque.cs`,
+      `EstoqueConfiguration.cs`, `EstoqueDto.cs`,
+      `Create`/`UpdateEstoqueCommand` (e dos dois handlers de query,
+      `GetAllEstoqueHandler`/`GetEstoqueByIdHandler`)
+  - `dotnet build` sem erros; nenhuma referência a
+    `EstoqueMinimo`/`estoque_minimo` restante fora de migrations
+    antigas (histórico preservado por design)
+
+- [x] Gerar e aplicar migration derrubando a coluna `estoque_minimo`
+      de `estoque`
+  - Migration `20260913144926_RemoveEstoqueMinimoDeEstoque`, aplicada
+    localmente (`ALTER TABLE estoque DROP COLUMN estoque_minimo`
+    confirmado no log)
+
+- [x] Testado via curl (usuário Admin de teste): criar peça sem
+      `estoqueMinimo` no payload → `201`, `GET` confirma que o campo
+      não vem mais na resposta; dado de teste removido depois

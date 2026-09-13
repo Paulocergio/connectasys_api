@@ -21,7 +21,6 @@ namespace connectasys_api.Core.Application.Commands.OrdensServico.UpdateOrdemSer
         public string DescricaoProblema { get; set; } = string.Empty;
         public string? Diagnostico { get; set; }
         public string? Solucao { get; set; }
-        public DateTime? PrevisaoTermino { get; set; }
         public DateTime? DataConclusao { get; set; }
         public decimal ValorMaoDeObra { get; set; }
         public decimal Desconto { get; set; }

@@ -13,7 +13,6 @@ namespace connectasys_api.Core.Application.DTOs
         public string? Diagnostico { get; set; }
         public string? Solucao { get; set; }
         public DateTime DataAbertura { get; set; }
-        public DateTime? PrevisaoTermino { get; set; }
         public DateTime? DataConclusao { get; set; }
         public decimal ValorMaoDeObra { get; set; }
         public decimal Desconto { get; set; }
@@ -48,7 +47,6 @@ namespace connectasys_api.Core.Application.DTOs
                 Diagnostico = o.Diagnostico,
                 Solucao = o.Solucao,
                 DataAbertura = o.DataAbertura,
-                PrevisaoTermino = o.PrevisaoTermino,
                 DataConclusao = o.DataConclusao,
                 ValorMaoDeObra = o.ValorMaoDeObra,
                 Desconto = o.Desconto,

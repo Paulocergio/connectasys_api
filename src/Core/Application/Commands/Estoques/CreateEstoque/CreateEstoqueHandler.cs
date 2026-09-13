@@ -20,7 +20,6 @@ namespace connectasys_api.Core.Application.Commands.Estoques.CreateEstoque
                 Quantidade = request.Quantidade,
                 PrecoCompra = request.PrecoCompra,
                 PrecoVenda = request.PrecoVenda,
-                EstoqueMinimo = request.EstoqueMinimo,
                 DataCadastro = DateTime.UtcNow
             };
 
@@ -34,7 +33,6 @@ namespace connectasys_api.Core.Application.Commands.Estoques.CreateEstoque
                 Quantidade = estoque.Quantidade,
                 PrecoCompra = estoque.PrecoCompra,
                 PrecoVenda = estoque.PrecoVenda,
-                EstoqueMinimo = estoque.EstoqueMinimo,
                 DataCadastro = estoque.DataCadastro
             };
         }

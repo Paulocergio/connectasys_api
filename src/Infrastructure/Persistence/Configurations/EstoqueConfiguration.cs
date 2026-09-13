@@ -17,7 +17,6 @@ namespace connectasys_api.Infrastructure.Persistence.Configurations
             builder.Property(e => e.Quantidade).HasColumnName("quantidade").HasColumnType("numeric(10,2)");
             builder.Property(e => e.PrecoCompra).HasColumnName("preco_compra").HasColumnType("numeric(10,2)");
             builder.Property(e => e.PrecoVenda).HasColumnName("preco_venda").HasColumnType("numeric(10,2)");
-            builder.Property(e => e.EstoqueMinimo).HasColumnName("estoque_minimo").HasColumnType("numeric(10,2)");
             builder.Property(e => e.DataCadastro).HasColumnName("data_cadastro");
         }
     }

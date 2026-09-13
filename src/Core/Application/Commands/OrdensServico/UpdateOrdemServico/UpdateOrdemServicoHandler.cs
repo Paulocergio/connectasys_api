@@ -40,8 +40,12 @@ namespace connectasys_api.Core.Application.Commands.OrdensServico.UpdateOrdemSer
             var veiculo = await _veiculoRepository.GetByIdAsync(request.VeiculoId);
             if (veiculo is null || veiculo.ClienteId != request.ClienteId) return UpdateOrdemServicoResult.ClienteOuVeiculoInvalido;
 
-            if (request.TecnicoId is not null && await _usuarioRepository.GetByIdAsync(request.TecnicoId.Value) is null)
-                return UpdateOrdemServicoResult.TecnicoInvalido;
+            if (request.TecnicoId is not null)
+            {
+                var tecnico = await _usuarioRepository.GetByIdAsync(request.TecnicoId.Value);
+                if (tecnico is null || tecnico.Role != Roles.Mecanico)
+                    return UpdateOrdemServicoResult.TecnicoInvalido;
+            }
 
             var statusAnterior = ordemServico.Status;
 
@@ -52,7 +56,6 @@ namespace connectasys_api.Core.Application.Commands.OrdensServico.UpdateOrdemSer
             ordemServico.DescricaoProblema = request.DescricaoProblema;
             ordemServico.Diagnostico = request.Diagnostico;
             ordemServico.Solucao = request.Solucao;
-            ordemServico.PrevisaoTermino = request.PrevisaoTermino;
             ordemServico.DataConclusao = request.DataConclusao;
             ordemServico.ValorMaoDeObra = request.ValorMaoDeObra;
             ordemServico.Desconto = Math.Clamp(request.Desconto, 0, 100);

@@ -1,5 +1,9 @@
 # Design — Ordens de Serviço
 
+> **Revisão 2026-09-13:** `PrevisaoTermino` removida da entidade, DTO,
+> tabela (migration nova) e commands; `TecnicoId` passa a ser validado
+> contra `Role = "Mecânico"` em `Create`/`UpdateOrdemServicoHandler`.
+
 ## Entidades (`Core/Domain/Entities/`)
 
 ```csharp
@@ -14,7 +18,6 @@ public class OrdemServico
     public string? Diagnostico { get; set; }
     public string? Solucao { get; set; }
     public DateTime DataAbertura { get; set; } = DateTime.UtcNow;
-    public DateTime? PrevisaoTermino { get; set; }
     public DateTime? DataConclusao { get; set; }
     public decimal ValorMaoDeObra { get; set; }
     public decimal Desconto { get; set; }
@@ -72,7 +75,6 @@ public static class StatusOrdemServico
 | Diagnostico | diagnostico | `text`, nullable |
 | Solucao | solucao | `text`, nullable |
 | DataAbertura | data_abertura | |
-| PrevisaoTermino | previsao_termino | nullable |
 | DataConclusao | data_conclusao | nullable |
 | ValorMaoDeObra | valor_mao_de_obra | `decimal(10,2)` |
 | Desconto | desconto | `decimal(10,2)` |
@@ -103,7 +105,6 @@ public class OrdemServicoDto
     public string? Diagnostico { get; set; }
     public string? Solucao { get; set; }
     public DateTime DataAbertura { get; set; }
-    public DateTime? PrevisaoTermino { get; set; }
     public DateTime? DataConclusao { get; set; }
     public decimal ValorMaoDeObra { get; set; }
     public decimal Desconto { get; set; }
@@ -127,8 +128,8 @@ public class ItemOrdemServicoDto
 
 | Ação | Tipo | Notas |
 |---|---|---|
-| Criar OS | `CreateOrdemServicoCommand` | valida `ClienteId`/`VeiculoId` existem e `VeiculoId` pertence ao `ClienteId`; retorna `null` (→ `400`) se não |
-| Atualizar OS | `UpdateOrdemServicoCommand` | edita status/diagnóstico/solução/datas/valores; enum de resultado (`Success`/`NotFound`/`StatusInvalido`/`ClienteOuVeiculoInvalido`), mesmo padrão de `UpdateVeiculoResult` |
+| Criar OS | `CreateOrdemServicoCommand` | valida `ClienteId`/`VeiculoId` existem e `VeiculoId` pertence ao `ClienteId`; se `TecnicoId` informado, valida que o usuário existe e tem `Role = "Mecânico"`; retorna `null`/resultado de erro (→ `400`) se não |
+| Atualizar OS | `UpdateOrdemServicoCommand` | edita status/diagnóstico/solução/datas/valores; mesma validação de `TecnicoId` da criação; enum de resultado (`Success`/`NotFound`/`StatusInvalido`/`ClienteOuVeiculoInvalido`/`TecnicoInvalido`), mesmo padrão de `UpdateVeiculoResult` |
 | Remover OS | `DeleteOrdemServicoCommand` | remove itens junto (cascade no banco resolve) |
 | Adicionar item | `AddItemOrdemServicoCommand` | `OrdemServicoId` + descrição/quantidade/valor |
 | Remover item | `RemoveItemOrdemServicoCommand` | por `Id` do item |
@@ -173,8 +174,18 @@ negócio, já protegido desde a spec `autorizacao`).
 - **Decisão:** `VeiculoId` obrigatório e validado contra
   `ClienteId` informado (o veículo tem que pertencer àquele cliente)
   — evita abrir OS de um veículo de outro cliente por engano.
-- **Risco aceito:** sem checagem de que `TecnicoId` é um usuário com
-  role `Mecânico` — fora de escopo, documentado na spec.
+- **Decisão (revisão 2026-09-13):** `TecnicoId`, quando informado, é
+  validado contra `IUsuarioRepository` — usuário precisa existir **e**
+  ter `Role == Roles.Mecanico` (`Common/Roles.cs`, mesma constante já
+  usada em `perfis-usuario`); qualquer um dos dois motivos falhando
+  retorna `TecnicoInvalido` → controller mapeia pra `400` com mensagem
+  distinguindo "técnico não encontrado" de "usuário não é mecânico".
+- **Decisão (revisão 2026-09-13):** `PrevisaoTermino` removida por
+  completo (entidade, configuração EF, DTO, commands) — migration nova
+  (`RemovePrevisaoTermino...`) derruba a coluna `previsao_termino`.
+  Sem dado a migrar/preservar (feature `calendario`, que passa a cobrir
+  agendamento/data prevista, é uma tabela própria — ver
+  `specs/calendario/`).
 - **Decisão:** itens (peças) têm seus próprios endpoints
   (`POST .../itens`, `DELETE .../itens/{id}`) em vez de reescrever a
   lista inteira no `PUT` da OS — evita o cliente HTTP ter que reenviar

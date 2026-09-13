@@ -1,4 +1,5 @@
 using MediatR;
+using connectasys_api.Core.Application.Common;
 using connectasys_api.Core.Application.DTOs;
 using connectasys_api.Core.Application.Interfaces.Repositories;
 using connectasys_api.Core.Domain.Entities;
@@ -32,8 +33,11 @@ namespace connectasys_api.Core.Application.Commands.OrdensServico.CreateOrdemSer
             var veiculo = await _veiculoRepository.GetByIdAsync(request.VeiculoId);
             if (veiculo is null || veiculo.ClienteId != request.ClienteId) return null;
 
-            if (request.TecnicoId is not null && await _usuarioRepository.GetByIdAsync(request.TecnicoId.Value) is null)
-                return null;
+            if (request.TecnicoId is not null)
+            {
+                var tecnico = await _usuarioRepository.GetByIdAsync(request.TecnicoId.Value);
+                if (tecnico is null || tecnico.Role != Roles.Mecanico) return null;
+            }
 
             var ordemServico = new OrdemServico
             {
@@ -41,7 +45,6 @@ namespace connectasys_api.Core.Application.Commands.OrdensServico.CreateOrdemSer
                 VeiculoId = request.VeiculoId,
                 TecnicoId = request.TecnicoId,
                 DescricaoProblema = request.DescricaoProblema,
-                PrevisaoTermino = request.PrevisaoTermino,
                 ValorMaoDeObra = request.ValorMaoDeObra,
                 Desconto = Math.Clamp(request.Desconto, 0, 100),
                 DataAbertura = DateTime.UtcNow

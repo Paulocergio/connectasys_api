@@ -10,6 +10,5 @@ namespace connectasys_api.Core.Application.Commands.Estoques.CreateEstoque
         public decimal Quantidade { get; set; }
         public decimal PrecoCompra { get; set; }
         public decimal PrecoVenda { get; set; }
-        public decimal EstoqueMinimo { get; set; }
     }
 }

@@ -13,7 +13,6 @@ namespace connectasys_api.Core.Domain.Entities
         public string? Diagnostico { get; set; }
         public string? Solucao { get; set; }
         public DateTime DataAbertura { get; set; } = DateTime.UtcNow;
-        public DateTime? PrevisaoTermino { get; set; }
         public DateTime? DataConclusao { get; set; }
         public decimal ValorMaoDeObra { get; set; }
 

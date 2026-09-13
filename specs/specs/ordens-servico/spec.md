@@ -1,5 +1,11 @@
 # Spec — Ordens de Serviço
 
+> **Revisão 2026-09-13** (rodada de ajustes pedida pelo usuário): campo
+> `PrevisaoTermino` removido (backend, DTO e coluna da tabela); a regra
+> de `TecnicoId` só aceitar usuário com `Role = "Mecânico"`, antes fora
+> de escopo, agora entra em vigor. Ver `specs/calendario/` (nova
+> feature) para o CRUD de agenda dos mecânicos.
+
 ## Objetivo
 
 Permitir que a oficina abra, acompanhe e feche Ordens de Serviço
@@ -37,7 +43,6 @@ módulos de Clientes e Veículos já existem e servem de base pra este.
 | Diagnostico | texto | não | preenchido depois da avaliação |
 | Solucao | texto | não | o que foi feito |
 | DataAbertura | data/hora | não (automático) | preenchida na criação |
-| PrevisaoTermino | data/hora | não | |
 | DataConclusao | data/hora | não | preenchida quando o status vira `Concluído` |
 | ValorMaoDeObra | decimal | não (default 0) | |
 | Desconto | decimal | não (default 0) | |
@@ -72,6 +77,10 @@ Valor total da OS = `ValorMaoDeObra + soma(itens.Quantidade × itens.ValorUnitar
 - Listar OS retorna todas, com filtro opcional por cliente e por
   veículo (pra ver o histórico de um cliente/veículo específico).
 - Remover uma OS remove os itens dela junto (não deixa item órfão).
+- Criar/atualizar OS informando `TecnicoId` de um usuário cujo `Role`
+  não é `"Mecânico"` retorna erro claro (`400`) — antes qualquer
+  usuário podia ser designado, essa checagem passa a valer (revisão
+  2026-09-13).
 
 ## Fora de escopo (por enquanto)
 
@@ -86,8 +95,6 @@ Valor total da OS = `ValorMaoDeObra + soma(itens.Quantidade × itens.ValorUnitar
 - Vínculo com estoque (baixa automática de peça usada) — os itens da
   OS são só um registro de texto livre, não descontam de um catálogo
   de estoque (que não existe ainda no sistema).
-- Regra de que só um usuário com role `Mecânico` pode ser
-  `TecnicoId` — por enquanto qualquer usuário pode ser designado.
 
 ## Suposições e Perguntas em Aberto
 
@@ -97,3 +104,18 @@ Valor total da OS = `ValorMaoDeObra + soma(itens.Quantidade × itens.ValorUnitar
   Veículos já cita "ordens de serviço vinculadas ao veículo" como
   próximo passo). Se a intenção era permitir OS sem veículo (ex.:
   serviço não automotivo), avisar pra eu ajustar.
+- **Revisão 2026-09-13:** `PrevisaoTermino` removido — campo, coluna e
+  qualquer referência no DTO saem do modelo (ver `design.md`). A regra
+  de `TecnicoId` só aceitar `Role = "Mecânico"` (antes em "Fora de
+  escopo") passa a valer; ver critério de aceite acima e `design.md`
+  para onde a validação entra no `Create`/`UpdateOrdemServicoHandler`.
+- **Pergunta em aberto:** a checagem de conflito de agenda (mesmo dia/
+  horário do técnico) descrita em `specs/calendario/spec.md` acontece
+  no momento de criar/atualizar a OS (validação no backend, rejeitando
+  com `409` se houver conflito) ou é responsabilidade só do frontend
+  (consulta prévia ao endpoint de conflito antes de deixar o usuário
+  salvar, sem bloqueio no `Create`/`UpdateOrdemServicoHandler`)? Este
+  documento assume a segunda opção — o backend não bloqueia, só expõe
+  o endpoint de checagem consumido pela tela — pra não acoplar o CRUD
+  de OS ao de Calendário; revisar se o negócio exige garantia no
+  servidor (ex.: dois usuários salvando ao mesmo tempo).

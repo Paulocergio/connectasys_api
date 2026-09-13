@@ -29,6 +29,7 @@ namespace connectasys_api.Infrastructure.Persistence.Context
         public DbSet<OrdemServico> OrdensServico => Set<OrdemServico>();
         public DbSet<ItemOrdemServico> ItensOrdemServico => Set<ItemOrdemServico>();
         public DbSet<Estoque> Estoque => Set<Estoque>();
+        public DbSet<Agendamento> Agendamentos => Set<Agendamento>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

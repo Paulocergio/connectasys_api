@@ -19,7 +19,6 @@ namespace connectasys_api.Core.Application.Commands.Estoques.UpdateEstoque
             estoque.Quantidade = request.Quantidade;
             estoque.PrecoCompra = request.PrecoCompra;
             estoque.PrecoVenda = request.PrecoVenda;
-            estoque.EstoqueMinimo = request.EstoqueMinimo;
 
             await _repository.UpdateAsync(estoque);
             return UpdateEstoqueResult.Success;

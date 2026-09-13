@@ -8,7 +8,6 @@ namespace connectasys_api.Core.Domain.Entities
         public decimal Quantidade { get; set; }
         public decimal PrecoCompra { get; set; }
         public decimal PrecoVenda { get; set; }
-        public decimal EstoqueMinimo { get; set; }
         public DateTime DataCadastro { get; set; } = DateTime.UtcNow;
     }
 }
