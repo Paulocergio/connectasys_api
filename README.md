@@ -2,7 +2,7 @@
 
 # 🔧 ConnectaSys API
 
-**SaaS de gestão para oficinas mecânicas** — clientes, veículos, ordens de serviço, estoque e financeiro em uma única API.
+**Projeto de estudo de Spec-Driven Development (SDD)** — um backend fictício de gestão para oficinas mecânicas, usado como laboratório para praticar o desenvolvimento guiado por especificações.
 
 ![.NET](https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
 ![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)
@@ -11,17 +11,29 @@
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
 
+![Propósito](https://img.shields.io/badge/propósito-aprendizado%20de%20SDD-orange?style=flat-square)
+![Metodologia](https://img.shields.io/badge/metodologia-Spec--Driven%20Development-blueviolet?style=flat-square)
 ![Arquitetura](https://img.shields.io/badge/arquitetura-Clean%20Architecture-0A7E8C?style=flat-square)
 ![CQRS](https://img.shields.io/badge/padrão-CQRS%20%2F%20MediatR-purple?style=flat-square)
-![Auth](https://img.shields.io/badge/auth-JWT%20%2B%20BCrypt-green?style=flat-square)
-![Status](https://img.shields.io/badge/status-em%20evolução-yellow?style=flat-square)
+![Status](https://img.shields.io/badge/status-projeto%20de%20estudo-yellow?style=flat-square)
 
 </div>
 
 ---
 
+> [!IMPORTANT]
+> **Este é um projeto exclusivamente educacional.**
+>
+> O ConnectaSys **não é um produto comercial**, não atende oficinas reais e **não deve ser usado em produção**. Ele existe apenas como exercício prático para aprender a **usar Spec-Driven Development (SDD)**: escrever a especificação primeiro e só depois implementar o código a partir dela.
+>
+> O domínio de oficina mecânica foi escolhido por ser concreto e ter regras de negócio suficientes para exercitar o fluxo `spec → design → tasks → código`. Nomes de empresa, domínios e dados de exemplo são fictícios.
+
+---
+
 ## 📑 Sumário
 
+- [Por que este projeto existe](#-por-que-este-projeto-existe)
+- [Como o SDD é aplicado aqui](#-como-o-sdd-é-aplicado-aqui)
 - [Visão geral](#-visão-geral)
 - [Módulos implementados](#-módulos-implementados)
 - [Stack](#-stack)
@@ -32,14 +44,56 @@
 - [Regras de negócio](#-regras-de-negócio)
 - [Modelo de dados](#-modelo-de-dados)
 - [Docker](#-docker)
-- [Specs](#-specs-spec-driven-development)
-- [Roadmap](#-roadmap)
+- [Roadmap de estudo](#-roadmap-de-estudo)
+- [Aviso e licença](#-aviso-e-licença)
+
+---
+
+## 🎓 Por que este projeto existe
+
+O objetivo **não é entregar um sistema**, e sim aprender na prática a trabalhar com **Spec-Driven Development**. Cada funcionalidade do repositório é, antes de tudo, um exercício de:
+
+- descrever **o quê** e **por quê** antes de pensar em código;
+- transformar requisitos em um **design técnico** explícito;
+- quebrar o design em **tarefas ordenadas** e implementá-las seguindo a spec;
+- manter a spec como **fonte da verdade** — se o código precisa mudar, a spec muda primeiro.
+
+O código em si é o subproduto. O aprendizado está no processo.
+
+---
+
+## 📋 Como o SDD é aplicado aqui
+
+Nenhuma feature vira código antes de existir a spec. Cada uma mora em `specs/specs/<feature>/` com três arquivos:
+
+| Arquivo | Responde |
+|:--|:--|
+| `spec.md` | **O quê** e **por quê** — requisitos, critérios de aceite, campos |
+| `design.md` | **Como** — entidades, DTOs, endpoints, decisões técnicas |
+| `tasks.md` | **Em que ordem** — checklist de implementação |
+
+Acima de todas, `specs/specs/constitution.md` define as regras não-negociáveis do projeto — arquitetura, banco, nomenclatura e contrato da API. Quebrar uma delas exige alterar a constituição **antes**, não durante a implementação.
+
+### 🔁 Fluxo de trabalho
+
+```mermaid
+flowchart LR
+    A[constitution.md] --> B[spec.md]
+    B --> C[design.md]
+    C --> D[tasks.md]
+    D --> E[Código]
+    E -.->|mudança de requisito| B
+```
+
+**Features já especificadas e implementadas como exercício:** `usuarios` · `clientes` · `clientes-documento` · `veiculos` · `contas-pagar` · `contas-receber` · `forma-pagamento` · `autenticacao` · `autorizacao` · `perfis-usuario` · `rate-limiting-login` · `ordens-servico` · `aprovacao-os-conta-receber` · `estoque` · `robustez-erros-duplicidade` · `seguranca-quantica`
+
+> 💡 Para estudar o projeto, o caminho recomendado é ler a spec de uma feature **antes** de abrir o código correspondente e conferir se a implementação respeita o que foi especificado.
 
 ---
 
 ## 🎯 Visão geral
 
-A ConnectaSys API é o backend do ConnectaSys: um sistema de gestão pensado para o dia a dia de uma oficina mecânica. Ela cobre o ciclo completo do atendimento — **do cadastro do cliente e do veículo, passando pela ordem de serviço com peças baixadas do estoque, até a conta a receber gerada automaticamente na conclusão do serviço.**
+A ConnectaSys API simula o backend de um sistema de gestão para oficina mecânica. O cenário cobre o ciclo completo de um atendimento — **do cadastro do cliente e do veículo, passando pela ordem de serviço com peças baixadas do estoque, até a conta a receber gerada automaticamente na conclusão do serviço** — o que dá material suficiente para praticar specs com regras de negócio reais.
 
 Todo o domínio é modelado em português (`Cliente`, `Veiculo`, `OrdemServico`), os termos de arquitetura em inglês (`Command`, `Query`, `Handler`, `Repository`), e cada feature nasce de uma spec escrita antes do código.
 
@@ -60,6 +114,8 @@ Todo o domínio é modelado em português (`Cliente`, `Veiculo`, `OrdemServico`)
 | 💸 **Contas a Pagar** | CRUD + forma de pagamento + status calculado | ✅ |
 | 💰 **Contas a Receber** | CRUD, vínculo com OS e geração automática na conclusão do serviço | ✅ |
 | 🧯 **Tratamento de erros** | Handler global de exceções, sem vazar stack trace para o cliente | ✅ |
+
+> Cada módulo acima corresponde a uma ou mais specs em `specs/specs/`.
 
 ---
 
@@ -84,6 +140,8 @@ Clean Architecture em 3 projetos, com dependências apontando sempre para dentro
 
 ```
 connectasys_api.slnx
+│
+├── specs/specs                   → Specs SDD (constitution + spec/design/tasks por feature)
 │
 ├── src/Core                      → Domínio + regras de aplicação (não depende de ninguém)
 │   ├── Domain/Entities             → Cliente, Usuario, Veiculo, OrdemServico,
@@ -123,6 +181,8 @@ flowchart LR
 
 ## 🔒 Segurança
 
+> ⚠️ As medidas abaixo foram especificadas e implementadas **como exercício de SDD**. O projeto não passou por auditoria de segurança e não deve guardar dados reais.
+
 | Proteção | Implementação |
 |:--|:--|
 | 🔑 **Senhas** | Hash **BCrypt** — nunca gravadas nem retornadas em texto puro (`UsuarioDto` não expõe `SenhaHash`) |
@@ -130,7 +190,7 @@ flowchart LR
 | 🚧 **Endpoints** | `[Authorize]` em todos os controllers; criar/editar/excluir usuário exige role **Admin** |
 | 🐢 **Rate limiting** | 10 tentativas de login por IP a cada 60s + bloqueio da conta por 15 min após 5 falhas |
 | 🔐 **HTTPS** | `UseHttpsRedirection` ativo, com **HSTS** fora de desenvolvimento |
-| 🌐 **CORS** | Loopback liberado em dev; em produção apenas as origens de `Cors:AllowedOrigins` |
+| 🌐 **CORS** | Loopback liberado em dev; fora dele apenas as origens de `Cors:AllowedOrigins` |
 | 🙈 **Segredos** | `Jwt:Key` e senha do banco fora do repositório — via **user-secrets** ou variáveis de ambiente |
 | 🧯 **Erros** | Exception handler global: loga o erro real e devolve mensagem genérica ao cliente |
 | 🧬 **Postura pós-quântica** | Apenas primitivas simétricas (HMAC-SHA256, BCrypt), resistentes a Grover nos tamanhos em uso — ver `specs/specs/seguranca-quantica/` |
@@ -164,7 +224,7 @@ dotnet user-secrets set "ConnectionStrings:DefaultConnection" \
 dotnet user-secrets set "Jwt:Key" "$(openssl rand -base64 32)"
 ```
 
-> 💡 Em produção, use variáveis de ambiente: `ConnectionStrings__DefaultConnection`, `Jwt__Key` e `Cors__AllowedOrigins`.
+> 💡 Fora do ambiente de desenvolvimento, use variáveis de ambiente: `ConnectionStrings__DefaultConnection`, `Jwt__Key` e `Cors__AllowedOrigins`.
 
 ### 3. Confie no certificado de desenvolvimento
 
@@ -333,6 +393,8 @@ Authorization: Bearer <token>
 
 ## 📐 Regras de negócio
 
+> As regras abaixo foram definidas nas specs (`spec.md`) de cada feature e servem como cenário de prática — não representam requisitos de um cliente real.
+
 ### 🧾 Ciclo de vida da Ordem de Serviço
 
 ```mermaid
@@ -436,7 +498,7 @@ Convenções de banco, definidas em `specs/specs/constitution.md`:
 
 ## 🐳 Docker
 
-Build multi-stage (SDK 10 → ASP.NET runtime 10), servindo em `http://+:8080`:
+Build multi-stage (SDK 10 → ASP.NET runtime 10), servindo em `http://+:8080`. Útil para praticar a execução em container localmente:
 
 ```bash
 docker build -t connectasys-api .
@@ -444,7 +506,7 @@ docker build -t connectasys-api .
 docker run -p 8080:8080 \
   -e ConnectionStrings__DefaultConnection="Host=host.docker.internal;Port=5432;Database=ConnectaSysDb;Username=postgres;Password=SUA_SENHA" \
   -e Jwt__Key="$(openssl rand -base64 32)" \
-  -e Cors__AllowedOrigins="https://app.connectasys.com" \
+  -e Cors__AllowedOrigins="http://localhost:3000" \
   connectasys-api
 ```
 
@@ -459,23 +521,9 @@ docker run -p 8080:8080 \
 
 ---
 
-## 📋 Specs (spec-driven development)
+## 🗺️ Roadmap de estudo
 
-Nenhuma feature vira código antes de existir a spec. Cada uma mora em `specs/specs/<feature>/` com três arquivos:
-
-| Arquivo | Responde |
-|:--|:--|
-| `spec.md` | **O quê** e **por quê** — requisitos, critérios de aceite, campos |
-| `design.md` | **Como** — entidades, DTOs, endpoints, decisões técnicas |
-| `tasks.md` | **Em que ordem** — checklist de implementação |
-
-Acima de todas, `specs/specs/constitution.md` define as regras não-negociáveis do projeto — arquitetura, banco, nomenclatura e contrato da API. Quebrar uma delas exige alterar a constituição **antes**, não durante a implementação.
-
-**Features já especificadas e entregues:** `usuarios` · `clientes` · `clientes-documento` · `veiculos` · `contas-pagar` · `contas-receber` · `forma-pagamento` · `autenticacao` · `autorizacao` · `perfis-usuario` · `rate-limiting-login` · `ordens-servico` · `aprovacao-os-conta-receber` · `estoque` · `robustez-erros-duplicidade` · `seguranca-quantica`
-
----
-
-## 🗺️ Roadmap
+Cada item abaixo é uma **próxima spec a escrever e implementar** como exercício de SDD.
 
 - [x] 🔐 Autenticação com JWT
 - [x] 🔑 Hash de senha com BCrypt
@@ -487,7 +535,7 @@ Acima de todas, `specs/specs/constitution.md` define as regras não-negociáveis
 - [x] 🎨 Dark mode persistido por usuário
 - [x] 🐳 Containerização com Docker
 - [ ] ✅ Validação de entrada com FluentValidation
-- [ ] 🧪 Testes automatizados (unitários e de integração)
+- [ ] 🧪 Testes automatizados derivados dos critérios de aceite das specs
 - [ ] 🏢 Multi-tenant por oficina (`empresa_id`)
 - [ ] 📄 Paginação e filtros nas listagens
 - [ ] 🔁 Refresh token
@@ -495,12 +543,14 @@ Acima de todas, `specs/specs/constitution.md` define as regras não-negociáveis
 
 ---
 
-## 📄 Licença
+## 📄 Aviso e licença
+
+Este repositório é um **projeto pessoal de aprendizado de Spec-Driven Development**. Não é um produto, não tem suporte, não oferece garantias e não deve ser usado para gerenciar oficinas ou dados reais. Todos os nomes, e-mails e dados de exemplo são fictícios.
 
 Projeto privado — todos os direitos reservados.
 
 <div align="center">
 
-<sub>Feito com ☕ e .NET para as oficinas que mantêm o Brasil rodando.</sub>
+<sub>Feito com ☕ e .NET para aprender a especificar antes de codar.</sub>
 
 </div>
